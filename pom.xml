@@ -12,7 +12,21 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+    
+     <repositories>
+        <repository>
+            <id>wiser-snapshots</id>
+            <url>https://github.com/WiserUFBA/wiser-mvn-repo/raw/master/snapshots</url>
+        </repository>
+        
+        <repository>
+            <id>wiser-releases</id>
+            <url>https://github.com/WiserUFBA/wiser-mvn-repo/raw/master/releases</url>
+        </repository>
+    </repositories>
+    
+    
+    
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -30,10 +44,16 @@
                 <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
+                    
                     <instructions>
-                        <Bundle-Activator>br.ufba.dcc.wiser.soft_iot.analytics.fot.streamserver.soft_iot.Activator</Bundle-Activator>
-                        <Export-Package/>
+                        <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                        <Embed-Directory>target/dependency</Embed-Directory>
+                        <Embed-StripGroup>true</Embed-StripGroup>
+			<Embed-Transitive>true</Embed-Transitive>
+                        <Import-Package> </Import-Package>
                     </instructions>
+                    
+                
                 </configuration>
             </plugin>
         </plugins>
@@ -164,4 +184,16 @@
             </build>
         </profile>
     </profiles>
+    
+    <distributionManagement>
+        <repository>
+            <id>release-repo</id>
+            <url>https://github.com/WiserUFBA/wiser-mvn-repo/raw/master/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshot-repo</id>
+            <url>https://github.com/WiserUFBA/wiser-mvn-repo/raw/master/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+    
 </project>

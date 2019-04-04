@@ -11,4 +11,14 @@ package br.ufba.dcc.wiser.fotstream.soft_iot.server.controller;
  */
 public class MainController {
     
+/**
+
+* consumer is part of a consumer group, it will be assigned a subset of partitions
+from that topic.   
+   
+ */
+
+
+
+
 }

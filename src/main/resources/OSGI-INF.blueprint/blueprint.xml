@@ -51,8 +51,7 @@
     <cm:property-placeholder persistent-id="" update-strategy="reload">
 		
                 <cm:default-properties>
-			<cm:property name="MQTTHost" value="" />
-			<cm:property name="MQTTPort" value="" />
+			
 			<cm:property name="MQTTUsername" value="" />
 			<cm:property name="MQTTPassword" value="" />
 			<cm:property name="MQTTServerId" value="FoTGateway" />

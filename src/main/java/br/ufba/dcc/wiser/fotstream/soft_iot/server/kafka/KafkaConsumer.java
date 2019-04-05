@@ -6,6 +6,7 @@
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka;
 
 import java.util.Properties;
+import org.apache.kafka.clients.consumer.Consumer;
 
 
 

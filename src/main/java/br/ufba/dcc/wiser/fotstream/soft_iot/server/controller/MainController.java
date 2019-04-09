@@ -17,7 +17,10 @@ public class MainController {
 from that topic.   
    
  */
-
+  
+    public void init(){
+        String topic = "";
+    }
 
 
 

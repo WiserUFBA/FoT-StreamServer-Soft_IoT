@@ -6,7 +6,10 @@
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka;
 
 import java.util.Properties;
-import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.LongSerializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 
 
@@ -14,7 +17,7 @@ import org.apache.kafka.clients.consumer.Consumer;
  *
  * @author brenno
  */
-public class KafkaConsumer {
+public class KafkaConsumerConfig {
     
     //Settings kafka
     private String KAFKA_BROKERS="18.218.147.104:9092";
@@ -28,7 +31,7 @@ public class KafkaConsumer {
     private Integer MAX_POLL_RECORDS=1;
     
     
-    public KafkaConsumer(){
+    public KafkaConsumerConfig(){
         
     }
     
@@ -42,7 +45,7 @@ public class KafkaConsumer {
         
     }
     
-    public Consumer<Long, String> createProducer() {
+    public KafkaConsumer<Long, String> createProducer() {
         Properties props = new Properties();
         System.out.println(this.KAFKA_BROKERS);
         System.out.println(this.CLIENT_ID);
@@ -51,7 +54,7 @@ public class KafkaConsumer {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         //props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, CustomPartitioner.class.getName());
-        return new KafkaProducer<>(props);
+        return new KafkaConsumer<Long, String>(props);
     }
 
     /**

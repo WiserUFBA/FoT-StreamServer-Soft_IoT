@@ -11,4 +11,7 @@ package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
  */
 public class FoTGatewayStream {
     
+    
+    private String FoTGatewayiD;
+    
 }

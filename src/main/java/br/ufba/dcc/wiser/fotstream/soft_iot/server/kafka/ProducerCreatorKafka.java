@@ -5,20 +5,21 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka;
 
+
 import java.util.Properties;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-
 
 
 /**
  *
  * @author brenno
  */
-public class KafkaConsumerConfig {
-    
+public class ProducerCreatorKafka {
+     
     //Settings kafka
     private String KAFKA_BROKERS="18.218.147.104:9092";
     private Integer MESSAGE_COUNT=1000;
@@ -31,12 +32,6 @@ public class KafkaConsumerConfig {
     private Integer MAX_POLL_RECORDS=1;
     
     
-    public KafkaConsumerConfig(){
-        
-    }
-    
-    
-    
     public void init(){
     
     }
@@ -45,20 +40,16 @@ public class KafkaConsumerConfig {
         
     }
     
-    public KafkaConsumer<Long, String> createProducer() {
+    public Producer<Long, String> createProducer() {
         Properties props = new Properties();
         System.out.println(this.KAFKA_BROKERS);
         System.out.println(this.CLIENT_ID);
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.KAFKA_BROKERS);
-        //props.put(ProducerConfig.CLIENT_ID_CONFIG, this.CLIENT_ID);
+        props.put(ProducerConfig.CLIENT_ID_CONFIG, this.CLIENT_ID);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        props.put("group.id", "Demo_Group");
-        props.put("enable.auto.commit", "true");
-        props.put("auto.commit.internal.ms", "1000");
-        props.put("session.timeout.ms", "30000");
         //props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, CustomPartitioner.class.getName());
-        return new KafkaConsumer<Long, String>(props);
+        return new KafkaProducer<>(props);
     }
 
     /**
@@ -186,5 +177,5 @@ public class KafkaConsumerConfig {
     public void setMAX_POLL_RECORDS(Integer MAX_POLL_RECORDS) {
         this.MAX_POLL_RECORDS = MAX_POLL_RECORDS;
     }
+    
 }
-

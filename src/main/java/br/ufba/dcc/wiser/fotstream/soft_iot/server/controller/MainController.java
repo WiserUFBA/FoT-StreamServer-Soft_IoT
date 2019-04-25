@@ -19,9 +19,13 @@ from that topic.
  */
   
     public void init(){
+        
+        
         String topic = "";
     }
 
-
+    public void readMessage(){
+        
+    }
 
 }

@@ -50,9 +50,11 @@ public class KafkaConsumerConfig {
         System.out.println(this.KAFKA_BROKERS);
         System.out.println(this.CLIENT_ID);
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.KAFKA_BROKERS);
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, this.CLIENT_ID);
+        //props.put(ProducerConfig.CLIENT_ID_CONFIG, this.CLIENT_ID);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        props.put("group.id", "Demo_Group");
+        props.put("group.id", "Demo_Group");
         //props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, CustomPartitioner.class.getName());
         return new KafkaConsumer<Long, String>(props);
     }

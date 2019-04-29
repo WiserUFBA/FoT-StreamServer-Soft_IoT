@@ -15,7 +15,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 
 /**
  *
- * @author brenno
+ * @author Brenno Mello <brennodemello.bm at gmail.com>
  */
 public class KafkaConsumerConfig {
     
@@ -45,7 +45,7 @@ public class KafkaConsumerConfig {
         
     }
     
-    public KafkaConsumer<Long, String> createProducer() {
+    public KafkaConsumer<Long, String> createConsumer() {
         Properties props = new Properties();
         System.out.println(this.KAFKA_BROKERS);
         System.out.println(this.CLIENT_ID);

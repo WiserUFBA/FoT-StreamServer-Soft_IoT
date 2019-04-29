@@ -5,13 +5,18 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.controller;
 
+import br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaConsumerConfig;
+import br.ufba.dcc.wiser.fotstream.soft_iot.server.model.FoTFogStream;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.model.FoTGatewayStream;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.util.UtilDebug;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+
 
 /**
  *
@@ -24,23 +29,51 @@ public class MainStreamController {
         from that topic.    
     */
     
-    private String fotStreamGateway = "";
+    private String fotStreamGateways;
     private List<FoTGatewayStream> listFoTGatewayStream;
-    
+    private KafkaConsumerConfig kafkaConsumerConfig;
   
     public void init(){
         
+        try{
         
-        String topic = "";
+            UtilDebug.printDebugConsole("Init FoT-StreamServer Controller");
+            UtilDebug.printDebugConsole(this.fotStreamGateways);
+
+
+            loadFoTStreamGateway();
+            initKafkaConsumer();
+            
+            
+        
+        }catch(Exception e){
+            UtilDebug.printDebugConsole("Error init StreamController: " + e.getMessage());
+        }
     }
 
     public void readMessage(){
         
     }
     
-     public void loadFoTStreamGateway(){
+    public void initKafkaConsumer(){
+        String topic = "";
+        KafkaConsumer<Long, String> consumer = kafkaConsumerConfig.createConsumer();
+        
+        ConsumerRecords<String, String> records = consumer.poll(long value);
+        for (TopicPartition partition : records.partitions()) {
+            List<ConsumerRecord<String, String>> partitionRecords = records.records(partition);
+            for (ConsumerRecord<String, String> record : partitionRecords) {
+                System.out.println(record.offset() + ": " + record.value());
+            }
+        long lastOffset = partitionRecords.get(partitionRecords.size() - 1).offset();
+        consumer.commitSync(Collections.singletonMap(partition, new OffsetAndMetadata(lastOffset + 1)));
+    }
+        
+    }
+    
+    public void loadFoTStreamGateway(){
         JsonParser parser = new JsonParser();
-        JsonElement element = parser.parse(this.fotStreamGateway);
+        JsonElement element = parser.parse(this.fotStreamGateways);
         JsonArray jarray = element.getAsJsonArray();
        
          UtilDebug.printDebugConsole("Tamanho do array: " + jarray.size());
@@ -49,23 +82,50 @@ public class MainStreamController {
             if(jsonElement.isJsonObject()){
                 
                 System.out.println("Loop 1");
-                FoTGatewayStream fotGatewayStream = new FoTGatewayStream(this.topology, this.mqttConfig, bootstrapServers);
+                FoTFogStream fotFogStream = new FoTFogStream();
                 JsonObject fotElement = jsonElement.getAsJsonObject();
-                fotDeviceStream.setDeviceId(fotElement.get("id").getAsString());
-                fotDeviceStream.setLatitude(fotElement.get("latitude").getAsFloat());
-                fotDeviceStream.setLongitude(fotElement.get("latitude").getAsFloat());
+                fotFogStream.setFogID(fotElement.get("id").getAsString());
+                fotFogStream.setLatitude(fotElement.get("type").getAsFloat());
+                fotFogStream.setLongitude(fotElement.get("latitude").getAsFloat());
                 
-                UtilDebug.printDebugConsole(fotDeviceStream.getDeviceId());
+                UtilDebug.printDebugConsole(fotFogStream.getFogID());
+                  
+                JsonArray jsonArraySensors = fotElement.getAsJsonArray("gateways");
+                List<FoTGatewayStream> listFoTGatewayStream = new ArrayList<FoTGatewayStream>();
                 
+               
                 
-                JsonArray jsonArraySensors = fotElement.getAsJsonArray("sensors");
-                List<FoTSensorStream> listFoTSensorStream = new ArrayList<FoTSensorStream>();
-                
+                for (JsonElement jsonElementSensor : jsonArraySensors) {
+                    if(jsonElementSensor.isJsonObject()){
+                        JsonObject fotGateway = jsonElementSensor.getAsJsonObject();
+                        String sensorID = fotGateway.get("id").getAsString();
                         
-               fotDeviceStream.setListFoTSensorStream(listFoTSensorStream);
-               this.listFoTDeviceStream.add(fotDeviceStream);
+                        FoTGatewayStream fotGatewayStream = new FoTSensorStream(this.topology, this.mqttConfig, 
+                                sensorID, fotDeviceStream, this.pathLog);
+                        
+                        fotSensorStream.setType(fotSensor.get("type").getAsString());
+                        fotSensorStream.setCollectionTime(fotSensor.get("collection_time").getAsInt());
+                        fotSensorStream.setPublishingTime(fotSensor.get("publishing_time").getAsInt());
+                        
+                        //fotSensorStream.sendTatuFlow();
+                        
+                        System.out.println("Loop 2");
+                        
+                        UtilDebug.printDebugConsole(fotSensorStream.getSensorid());
+                        UtilDebug.printDebugConsole(String.valueOf(fotSensorStream.getCollectionTime()));
+                        UtilDebug.printDebugConsole(String.valueOf(fotSensorStream.getPublishingTime()));
+                                
+                        listFoTSensorStream.add(fotSensorStream);
+                    }   
+                }
+                
+                
+                
+                this.listFoTGatewayStream = new ArrayList<FoTGatewayStream>();
+                
+                this.listFoTGatewayStream.add(fotGatewayStream);
             }
         }
     }
-     }
+   
 }

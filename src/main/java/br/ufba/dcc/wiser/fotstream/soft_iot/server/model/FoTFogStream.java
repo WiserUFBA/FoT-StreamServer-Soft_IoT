@@ -5,30 +5,32 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
+import java.util.List;
+
 /**
  *
  * @author Brenno Mello <brennodemello.bm at gmail.com>
  */
-public class FoTGatewayStream {
+public class FoTFogStream {
     
-    
-    private String FoTGatewayiD;
+    private String fogID;
     private String type;
     private float latitude;
     private float longitude;
-    
+    private List<FoTGatewayStream> listFoTGatewayStream;
+
     /**
-     * @return the FoTGatewayiD
+     * @return the fogID
      */
-    public String getFoTGatewayiD() {
-        return FoTGatewayiD;
+    public String getFogID() {
+        return fogID;
     }
 
     /**
-     * @param FoTGatewayiD the FoTGatewayiD to set
+     * @param fogID the fogID to set
      */
-    public void setFoTGatewayiD(String FoTGatewayiD) {
-        this.FoTGatewayiD = FoTGatewayiD;
+    public void setFogID(String fogID) {
+        this.fogID = fogID;
     }
 
     /**
@@ -56,7 +58,7 @@ public class FoTGatewayStream {
      * @param latitude the latitude to set
      */
     public void setLatitude(float latitude) {
-        this.setLatitude(latitude);
+        this.latitude = latitude;
     }
 
     /**
@@ -70,9 +72,23 @@ public class FoTGatewayStream {
      * @param longitude the longitude to set
      */
     public void setLongitude(float longitude) {
-        this.setLongitude(longitude);
+        this.longitude = longitude;
     }
 
+    /**
+     * @return the listFoTGatewayStream
+     */
+    public List<FoTGatewayStream> getListFoTGatewayStream() {
+        return listFoTGatewayStream;
+    }
+
+    /**
+     * @param listFoTGatewayStream the listFoTGatewayStream to set
+     */
+    public void setListFoTGatewayStream(List<FoTGatewayStream> listFoTGatewayStream) {
+        this.listFoTGatewayStream = listFoTGatewayStream;
+    }
+    
     
     
 }

@@ -16,7 +16,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 
 /**
  *
- * @author brenno
+ * @author Brenno Mello <brennodemello.bm at gmail.com>
  */
 public class ProducerCreatorKafka {
      

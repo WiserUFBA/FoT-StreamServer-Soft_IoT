@@ -29,15 +29,12 @@
 
     <bean id="MainStreamController" class="br.ufba.dcc.wiser.fotstream.soft_iot.server.controller" init-method="init" destroy-method="disconnect">
                     
-                    <property name="serverHost" value="${MQTTHost}" />
-                    <property name="port" value="${MQTTPort}" />
-                    <property name="serverId" value="${MQTTServerId}" />
-                    <property name="username" value="${MQTTUsername}" />
-                    <property name="password" value="${MQTTPassword}" />
+                    
+                    <property name="KafkaConsumerConfig" ref="KafkaConsumerConfig" />
                     <property name="debugModeValue" value="${debugMode}" />
                     <property name="defaultCollectionTime" value="${DefaultCollectionTimeSensorData}" />
                     <property name="defaultPublishingTime" value="${DefaultPublishingTimeSensorData}" />
-                    <property name="jsonDevices" value="${DevicesConnected}" />
+                    <property name="fotStreamGateways" value="${FogsManagement}" />
                     <property name="pathLog" value="${pathDefaultLog}" />
                                         
     </bean>
@@ -57,7 +54,7 @@
 			<cm:property name="KafkaServerId" value="FoT-StreamServer" />
 			<cm:property name="NumberOfHoursDataStored" value="24" />
 			<cm:property name="debugMode" value="false" />
-                        <cm:property name="DevicesConnected" value="[]" />
+                        <cm:property name="FogsManagement" value="[]" />
                         <!--<cm:property name="pathDefaultLog" value="/home/pi/log-karaf"/>-->
                         <cm:property name="pathDefaultLog" value="/home/brenno/Documentos/Log-karaf"/>
                         <cm:property name="KAFKA-BROKERS-DEFAUL-FOG" value="18.218.147.104:9092"/>

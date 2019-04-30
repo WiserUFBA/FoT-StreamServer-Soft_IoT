@@ -30,7 +30,7 @@ public class MainStreamController {
     */
     
     private String fotStreamGateways;
-    private List<FoTGatewayStream> listFoTGatewayStream;
+    private List<FoTFogStream> listFoTFogStream;
     private KafkaConsumerConfig kafkaConsumerConfig;
   
     public void init(){
@@ -56,10 +56,16 @@ public class MainStreamController {
     }
     
     public void initKafkaConsumer(){
-        String topic = "";
-        KafkaConsumer<Long, String> consumer = kafkaConsumerConfig.createConsumer();
+        //String topic = "";
+       
+        for (FoTFogStream foTFogStream : listFoTFogStream) {
+            KafkaConsumer<Long, String> consumer = kafkaConsumerConfig.createConsumer();
+            String topic = foTFogStream.getListFoTGatewayStream().get(0);
+        }
+        consumer.subscribe(topics);
         
-        ConsumerRecords<String, String> records = consumer.poll(long value);
+        
+        ConsumerRecords<long, String> records = consumer.poll(long value);
         for (TopicPartition partition : records.partitions()) {
             List<ConsumerRecord<String, String>> partitionRecords = records.records(partition);
             for (ConsumerRecord<String, String> record : partitionRecords) {
@@ -111,19 +117,17 @@ public class MainStreamController {
                         
                         System.out.println("Loop 2");
                         
-                        UtilDebug.printDebugConsole(fotSensorStream.getSensorid());
-                        UtilDebug.printDebugConsole(String.valueOf(fotSensorStream.getCollectionTime()));
-                        UtilDebug.printDebugConsole(String.valueOf(fotSensorStream.getPublishingTime()));
+                        UtilDebug.printDebugConsole(fotGatewayStream.getFoTGatewayiD());
+                        UtilDebug.printDebugConsole(String.valueOf(fotGatewayStream.getType()));
+                        //UtilDebug.printDebugConsole(String.valueOf(fotGatewayStream.getPublishingTime()));
                                 
-                        listFoTSensorStream.add(fotSensorStream);
+                        listFoTGatewayStream.add(fotGatewayStream);
                     }   
                 }
                 
                 
-                
-                this.listFoTGatewayStream = new ArrayList<FoTGatewayStream>();
-                
-                this.listFoTGatewayStream.add(fotGatewayStream);
+                fotFogStream.setListFoTGatewayStream(listFoTGatewayStream);
+                this.listFoTFogStream.add(fotFogStream);
             }
         }
     }

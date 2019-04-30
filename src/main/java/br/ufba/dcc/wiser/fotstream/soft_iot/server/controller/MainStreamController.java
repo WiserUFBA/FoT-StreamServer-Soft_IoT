@@ -85,27 +85,27 @@ public class MainStreamController {
                 FoTFogStream fotFogStream = new FoTFogStream();
                 JsonObject fotElement = jsonElement.getAsJsonObject();
                 fotFogStream.setFogID(fotElement.get("id").getAsString());
-                fotFogStream.setLatitude(fotElement.get("type").getAsFloat());
-                fotFogStream.setLongitude(fotElement.get("latitude").getAsFloat());
+                fotFogStream.setType(fotElement.get("type").getAsString());
+                fotFogStream.setLatitude(fotElement.get("latitude").getAsFloat());
+                fotFogStream.setLongitude(fotElement.get("longitude").getAsFloat());
                 
                 UtilDebug.printDebugConsole(fotFogStream.getFogID());
                   
-                JsonArray jsonArraySensors = fotElement.getAsJsonArray("gateways");
+                JsonArray jsonArrayGateways = fotElement.getAsJsonArray("gateways");
                 List<FoTGatewayStream> listFoTGatewayStream = new ArrayList<FoTGatewayStream>();
                 
                
                 
-                for (JsonElement jsonElementSensor : jsonArraySensors) {
+                for (JsonElement jsonElementSensor : jsonArrayGateways) {
                     if(jsonElementSensor.isJsonObject()){
                         JsonObject fotGateway = jsonElementSensor.getAsJsonObject();
-                        String sensorID = fotGateway.get("id").getAsString();
+                        //String sensorID = fotGateway.get("id").getAsString();
                         
-                        FoTGatewayStream fotGatewayStream = new FoTSensorStream(this.topology, this.mqttConfig, 
-                                sensorID, fotDeviceStream, this.pathLog);
+                        FoTGatewayStream fotGatewayStream = new FoTGatewayStream();
                         
-                        fotSensorStream.setType(fotSensor.get("type").getAsString());
-                        fotSensorStream.setCollectionTime(fotSensor.get("collection_time").getAsInt());
-                        fotSensorStream.setPublishingTime(fotSensor.get("publishing_time").getAsInt());
+                        fotGatewayStream.setType(fotGateway.get("type").getAsString());
+                        fotGatewayStream.setLatitude(fotGateway.get("latitude").getAsFloat());
+                        fotGatewayStream.setLongitude(fotGateway.get("longitude").getAsFloat());
                         
                         //fotSensorStream.sendTatuFlow();
                         

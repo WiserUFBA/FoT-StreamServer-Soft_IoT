@@ -5,6 +5,8 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+
 /**
  *
  * @author Brenno Mello <brennodemello.bm at gmail.com>
@@ -16,6 +18,7 @@ public class FoTGatewayStream {
     private String type;
     private float latitude;
     private float longitude;
+    private KafkaConsumer<Long, String> consumer;
     
     /**
      * @return the FoTGatewayiD

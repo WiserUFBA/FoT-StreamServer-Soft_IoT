@@ -6,7 +6,7 @@
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
 import java.util.List;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+
 
 /**
  *
@@ -19,7 +19,7 @@ public class FoTFogStream {
     private float latitude;
     private float longitude;
     private List<FoTGatewayStream> listFoTGatewayStream;
-    private KafkaConsumer<Long, String> consumer;
+    
     
     /**
      * @return the fogID

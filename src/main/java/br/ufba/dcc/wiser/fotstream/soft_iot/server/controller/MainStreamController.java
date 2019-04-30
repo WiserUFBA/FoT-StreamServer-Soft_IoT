@@ -100,6 +100,7 @@ public class MainStreamController {
                 JsonArray jsonArrayGateways = fotElement.getAsJsonArray("gateways");
                 List<FoTGatewayStream> listFoTGatewayStream = new ArrayList<FoTGatewayStream>();
                 
+                
                
                 
                 for (JsonElement jsonElementSensor : jsonArrayGateways) {
@@ -108,6 +109,8 @@ public class MainStreamController {
                         //String sensorID = fotGateway.get("id").getAsString();
                         
                         FoTGatewayStream fotGatewayStream = new FoTGatewayStream();
+                        KafkaConsumer<Long, String> consumer = kafkaConsumerConfig.createConsumer();
+                        
                         
                         fotGatewayStream.setType(fotGateway.get("type").getAsString());
                         fotGatewayStream.setLatitude(fotGateway.get("latitude").getAsFloat());

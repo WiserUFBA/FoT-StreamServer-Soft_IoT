@@ -115,6 +115,7 @@ public class MainStreamController {
                         fotGatewayStream.setType(fotGateway.get("type").getAsString());
                         fotGatewayStream.setLatitude(fotGateway.get("latitude").getAsFloat());
                         fotGatewayStream.setLongitude(fotGateway.get("longitude").getAsFloat());
+                        fotGatewayStream.setConsumer(consumer);
                         
                         //fotSensorStream.sendTatuFlow();
                         
@@ -123,7 +124,9 @@ public class MainStreamController {
                         UtilDebug.printDebugConsole(fotGatewayStream.getFoTGatewayiD());
                         UtilDebug.printDebugConsole(String.valueOf(fotGatewayStream.getType()));
                         //UtilDebug.printDebugConsole(String.valueOf(fotGatewayStream.getPublishingTime()));
-                                
+                         
+                        
+                        
                         listFoTGatewayStream.add(fotGatewayStream);
                     }   
                 }

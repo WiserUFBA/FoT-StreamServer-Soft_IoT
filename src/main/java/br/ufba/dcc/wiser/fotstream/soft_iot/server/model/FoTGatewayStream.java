@@ -5,6 +5,8 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
+import java.util.Collections;
+import java.util.List;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 /**
@@ -19,6 +21,17 @@ public class FoTGatewayStream {
     private float latitude;
     private float longitude;
     private KafkaConsumer<Long, String> consumer;
+    
+    public FoTGatewayStream(){
+        startConsumer();
+    }
+    
+    public void startConsumer(){
+         
+        String topic = "dev" + "." + this.FoTGatewayiD + ".*" ;
+        this.consumer.subscribe(Collections.singletonList(topic));
+        
+    }
     
     /**
      * @return the FoTGatewayiD
@@ -75,7 +88,20 @@ public class FoTGatewayStream {
     public void setLongitude(float longitude) {
         this.setLongitude(longitude);
     }
+    
+     /**
+     * @return the consumer
+     */
+    public KafkaConsumer<Long, String> getConsumer() {
+        return consumer;
+    }
 
+    /**
+     * @param consumer the consumer to set
+     */
+    public void setConsumer(KafkaConsumer<Long, String> consumer) {
+        this.consumer = consumer;
+    }
     
     
 }

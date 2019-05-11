@@ -27,7 +27,7 @@
         <property name="KAFKA_BROKERS" value="${KAFKA-BROKERS-DEFAUL-CLOUD}" />            
     </bean>
 
-    <bean id="MainStreamController" class="br.ufba.dcc.wiser.fotstream.soft_iot.server.controller" init-method="init" destroy-method="disconnect">
+    <bean id="MainStreamController" class="br.ufba.dcc.wiser.fotstream.soft_iot.server.controller.MainStreamController" init-method="init" destroy-method="disconnect">
                     
                     
                     <property name="KafkaConsumerConfig" ref="KafkaConsumerConfig" />

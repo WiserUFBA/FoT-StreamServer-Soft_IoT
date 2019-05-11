@@ -32,7 +32,11 @@ public class MainStreamController {
     private String fotStreamGateways;
     private List<FoTFogStream> listFoTFogStream;
     private KafkaConsumerConfig kafkaConsumerConfig;
-  
+    
+    public MainStreamController(){
+        
+    }
+    
     public void init(){
         
         try{
@@ -42,7 +46,7 @@ public class MainStreamController {
 
 
             loadFoTStreamGateway();
-            initKafkaConsumer();
+            //initKafkaConsumer();
             
             
         
@@ -56,7 +60,8 @@ public class MainStreamController {
     }
     
     public void initKafkaConsumer(){
-        //String topic = "";
+        /*
+        String topic = "";
        
         for (FoTFogStream foTFogStream : listFoTFogStream) {
             KafkaConsumer<Long, String> consumer = kafkaConsumerConfig.createConsumer();
@@ -73,8 +78,8 @@ public class MainStreamController {
             }
         long lastOffset = partitionRecords.get(partitionRecords.size() - 1).offset();
         consumer.commitSync(Collections.singletonMap(partition, new OffsetAndMetadata(lastOffset + 1)));
-    }
-        
+        }   
+        */
     }
     
     public void loadFoTStreamGateway(){
@@ -100,8 +105,6 @@ public class MainStreamController {
                 JsonArray jsonArrayGateways = fotElement.getAsJsonArray("gateways");
                 List<FoTGatewayStream> listFoTGatewayStream = new ArrayList<FoTGatewayStream>();
                 
-                
-               
                 
                 for (JsonElement jsonElementSensor : jsonArrayGateways) {
                     if(jsonElementSensor.isJsonObject()){
@@ -133,6 +136,7 @@ public class MainStreamController {
                 
                 
                 fotFogStream.setListFoTGatewayStream(listFoTGatewayStream);
+                fotFogStream.startStreamGatewayAnalysis();
                 this.listFoTFogStream.add(fotFogStream);
             }
         }

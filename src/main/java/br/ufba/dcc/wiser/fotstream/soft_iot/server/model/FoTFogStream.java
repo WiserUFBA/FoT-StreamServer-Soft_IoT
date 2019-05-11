@@ -5,9 +5,13 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
+import br.ufba.dcc.wiser.fotstream.soft_iot.server.util.UtilDebug;
+import java.time.Duration;
 import java.util.List;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+
 
 
 /**
@@ -24,25 +28,31 @@ public class FoTFogStream {
     
     
     public FoTFogStream(){
-        startStreamGatewayAnalysis();
+        //startStreamGatewayAnalysis();
     }
     
     public void startStreamGatewayAnalysis(){      
        while(true){
             for (FoTGatewayStream foTGatewayStream : listFoTGatewayStream) {
-                ConsumerRecords<Long, String> records = foTGatewayStream.getConsumer().poll(1000);
-                for (TopicPartition partition : records.partitions()) {
-                    List<ConsumerRecord<String, String>> partitionRecords = records.records(partition);
-                    for (ConsumerRecord<String, String> record : partitionRecords) {
-                        System.out.println(record.offset() + ": " + record.value());
+                try {
+ 
+                    ConsumerRecords<Long, String> records = foTGatewayStream.getConsumer().poll(Duration.ofMinutes(100));
+                    for (ConsumerRecord<Long, String> record : records){
+                        
+                        System.out.println("topic = " + record.topic() + "partition = " + record.partition() + "country = " + record.offset());
+                        System.out.println("offset = " + record.offset() + "key = " + record.key() + "value = " + record.value());
+                            
+                        
+                       
                     }
-                long lastOffset = partitionRecords.get(partitionRecords.size() - 1).offset();
-                consumer.commitSync(Collections.singletonMap(partition, new OffsetAndMetadata(lastOffset + 1)));
+                    }finally {
+                        foTGatewayStream.getConsumer().close();
+                    }
+            
             }
         }
+    
     }
-    
-    
     /**
      * @return the fogID
      */

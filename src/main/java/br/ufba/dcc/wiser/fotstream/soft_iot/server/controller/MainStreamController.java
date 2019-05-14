@@ -54,6 +54,15 @@ public class MainStreamController {
             UtilDebug.printDebugConsole("Error init StreamController: " + e.getMessage());
         }
     }
+    
+     public void disconnect(){
+       System.out.println("Disconnect Stream");
+       
+       
+       //Thread.currentThread().getThreadGroup().interrupt();
+       //Thread.currentThread().getThreadGroup().destroy();
+       //Thread.currentThread().destroy();
+    }
 
     public void readMessage(){
         

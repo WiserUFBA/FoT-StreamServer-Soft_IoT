@@ -38,7 +38,7 @@ public class KafkaConsumerConfig {
     
     
     public void init(){
-    
+         System.out.println("Init kafka consumer");
     }
     
     public void disconnect(){

@@ -33,7 +33,7 @@ public class ProducerCreatorKafka {
     
     
     public void init(){
-    
+         System.out.println("Init kafka producer");
     }
     
     public void disconnect(){

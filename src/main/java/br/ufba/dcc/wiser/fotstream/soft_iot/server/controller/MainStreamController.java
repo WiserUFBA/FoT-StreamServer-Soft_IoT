@@ -40,7 +40,7 @@ public class MainStreamController {
     public void init(){
         
         try{
-        
+            
             UtilDebug.printDebugConsole("Init FoT-StreamServer Controller");
             UtilDebug.printDebugConsole(this.fotStreamGateways);
 
@@ -51,7 +51,8 @@ public class MainStreamController {
             
         
         }catch(Exception e){
-            UtilDebug.printDebugConsole("Error init StreamController: " + e.getMessage());
+            UtilDebug.printDebugConsole("Error init MainStreamController: " + e.getMessage());
+            UtilDebug.printError(e);
         }
     }
     

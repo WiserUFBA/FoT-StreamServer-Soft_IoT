@@ -2,25 +2,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>br.ufba.dcc.wiser.fotstream.soft_iot.gateway</groupId>
-    <artifactId>FoT-StreamGateway-Soft_IoT</artifactId>
+    <groupId>br.ufba.dcc.wiser.fotstream.soft_iot.server</groupId>
+    <artifactId>FoT-StreamServer-Soft_IoT</artifactId>
     <version>1.0.0</version>
     <packaging>bundle</packaging>
 
-    <name>FoT-StreamGateway-Soft_IoT</name>
+    <name>FoT-StreamServer-Soft_IoT</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
-        <edgent.runtime.platform/>   <!-- set by -Pplatform-* -->
-        <edgent.runtime.groupId>org.apache.edgent${edgent.runtime.platform}</edgent.runtime.groupId>
-        <edgent.runtime.version>1.2.0</edgent.runtime.version>
+       
 
         <java.version>1.8</java.version>
         <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
         <maven.version>3.3.1</maven.version>
 
-        <jetty.version>9.3.6.v20151106</jetty.version>
+       
         <gson.version>2.2.4</gson.version>
         <slf4j.version>1.7.12</slf4j.version>
         <retrolambda.version>2.5.1</retrolambda.version>
@@ -53,48 +51,22 @@
         </dependency>
         -->
         
+        <!--    
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
             <version>1.1.0</version>
 	</dependency>
-                
-                
-        <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant</artifactId>
-            <version>1.10.5</version>
-            <scope>compile</scope>
-        </dependency>
+        -->
         
+         <!-- https://mvnrepository.com/artifact/org.apache.servicemix.bundles/org.apache.servicemix.bundles.kafka-clients -->
         <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-connectors-kafka</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-                
-        <dependency>
-            <groupId>nz.ac.waikato.cms.moa</groupId>
-            <artifactId>moa</artifactId>
-            <version>2014.04</version>
-            <scope>compile</scope>
-        </dependency>
-        
-        <dependency>
-	   <groupId>br.ufba.dcc.wiser.soft_iot</groupId>
-	   <artifactId>fot-gateway-mapping-devices</artifactId>
-	   <version>1.0.1</version>
-	   <scope>provided</scope>
-	</dependency>
-        
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.3.0</version>
-            <scope>provided</scope>
-        </dependency>
-        
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.kafka-clients</artifactId>
+            <version>2.1.1_1</version>
+        </dependency>        
+                          
+     
          <!-- the SLF4J API -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -111,119 +83,12 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- declare the Edgent provider(s) being used -->
-        <dependency>
-            <groupId>${edgent.runtime.groupId}</groupId>
-            <artifactId>edgent-providers-direct</artifactId>
-            <version>${edgent.runtime.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-connectors-mqtt</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-api-topology</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-              
-        <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-connectors-iot</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-                   
-        <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-api-graph</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-               
-        <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-spi-graph</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-spi-topology</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.paho</groupId>
-            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-        
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.8.2</version>
             <scope>compile</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-runtime-etiao</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-api-oplet</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-api-execution</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-api-function</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-runtime-jsoncontrol</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-api-window</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-      <dependency>
-            <groupId>org.apache.edgent</groupId>
-            <artifactId>edgent-connectors-common</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
-      </dependency>
-        
+        </dependency>      
       
     </dependencies>
 
@@ -240,10 +105,7 @@
                         <Embed-Directory>target/dependency</Embed-Directory>
                         <Embed-StripGroup>true</Embed-StripGroup>
 			<Embed-Transitive>true</Embed-Transitive>
-                        <Import-Package>!com.sun.jdmk.comm, !com.ibm.uvm.tools, !javax.jmdns, !org.jboss.netty.bootstrap, 
-                            !sun.nio.ch, !org.jboss.netty.buffer, !org.xerial.snappy, !org.jboss.netty.channel.socket.nio,
-                            !org.jboss.netty.channel.group, !org.jboss.netty.channel, !net.jpountz.xxhash,
-                            !net.jpountz.util, !net.jpountz.lz4, !joptsimple, !org.apache.kafka.common.message, *</Import-Package>
+                        <Import-Package>*</Import-Package>
                     </instructions>
                     
                 </configuration>

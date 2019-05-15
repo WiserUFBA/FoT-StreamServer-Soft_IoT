@@ -6,7 +6,6 @@
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
 import java.util.Collections;
-import java.util.List;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 /**
@@ -22,7 +21,8 @@ public class FoTGatewayStream {
     private float longitude;
     private KafkaConsumer<Long, String> consumer;
     
-    public FoTGatewayStream(){
+    public FoTGatewayStream(KafkaConsumer consumer){
+        this.consumer = consumer;
         startConsumer();
     }
     

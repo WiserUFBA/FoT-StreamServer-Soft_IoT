@@ -23,6 +23,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
  * @author Brenno Mello <brennodemello.bm at gmail.com>
  */
 public class MainStreamController {
+
     
     /**
         * consumer is part of a consumer group, it will be assigned a subset of partitions
@@ -32,6 +33,7 @@ public class MainStreamController {
     private String fotStreamGateways;
     private List<FoTFogStream> listFoTFogStream;
     private KafkaConsumerConfig kafkaConsumerConfig;
+    private String pathLog;
     
     public MainStreamController(){
         
@@ -42,8 +44,8 @@ public class MainStreamController {
         try{
         
             UtilDebug.printDebugConsole("Init FoT-StreamServer Controller");
-            UtilDebug.printDebugConsole(this.fotStreamGateways);
-
+            UtilDebug.printDebugConsole(this.getFotStreamGateways());
+            this.kafkaConsumerConfig = new KafkaConsumerConfig();
 
             loadFoTStreamGateway();
             //initKafkaConsumer();
@@ -52,6 +54,7 @@ public class MainStreamController {
         
         }catch(Exception e){
             UtilDebug.printDebugConsole("Error init StreamController: " + e.getMessage());
+            UtilDebug.printError(e);
         }
     }
     
@@ -69,6 +72,7 @@ public class MainStreamController {
     }
     
     public void initKafkaConsumer(){
+        
         /*
         String topic = "";
        
@@ -89,11 +93,12 @@ public class MainStreamController {
         consumer.commitSync(Collections.singletonMap(partition, new OffsetAndMetadata(lastOffset + 1)));
         }   
         */
+        
     }
     
     public void loadFoTStreamGateway(){
         JsonParser parser = new JsonParser();
-        JsonElement element = parser.parse(this.fotStreamGateways);
+        JsonElement element = parser.parse(this.getFotStreamGateways());
         JsonArray jarray = element.getAsJsonArray();
        
          UtilDebug.printDebugConsole("Tamanho do array: " + jarray.size());
@@ -120,14 +125,18 @@ public class MainStreamController {
                         JsonObject fotGateway = jsonElementSensor.getAsJsonObject();
                         //String sensorID = fotGateway.get("id").getAsString();
                         
-                        FoTGatewayStream fotGatewayStream = new FoTGatewayStream();
-                        KafkaConsumer<Long, String> consumer = kafkaConsumerConfig.createConsumer();
+                        KafkaConsumer<Long, String> consumer = getKafkaConsumerConfig().createConsumer();
+                        FoTGatewayStream fotGatewayStream = new FoTGatewayStream(consumer);
+                        
+                        System.out.println(fotGateway.get("type").getAsString());
+                        System.out.println(fotGateway.get("latitude").getAsFloat());
+                        System.out.println(fotGateway.get("longitude").getAsFloat());
                         
                         
                         fotGatewayStream.setType(fotGateway.get("type").getAsString());
                         fotGatewayStream.setLatitude(fotGateway.get("latitude").getAsFloat());
                         fotGatewayStream.setLongitude(fotGateway.get("longitude").getAsFloat());
-                        fotGatewayStream.setConsumer(consumer);
+                        //fotGatewayStream.setConsumer(consumer);
                         
                         //fotSensorStream.sendTatuFlow();
                         
@@ -146,9 +155,65 @@ public class MainStreamController {
                 
                 fotFogStream.setListFoTGatewayStream(listFoTGatewayStream);
                 fotFogStream.startStreamGatewayAnalysis();
-                this.listFoTFogStream.add(fotFogStream);
+                this.getListFoTFogStream().add(fotFogStream);
             }
         }
     }
    
+    /**
+     * @return the fotStreamGateways
+     */
+    public String getFotStreamGateways() {
+        return fotStreamGateways;
+    }
+
+    /**
+     * @param fotStreamGateways the fotStreamGateways to set
+     */
+    public void setFotStreamGateways(String fotStreamGateways) {
+        this.fotStreamGateways = fotStreamGateways;
+    }
+
+    /**
+     * @return the listFoTFogStream
+     */
+    public List<FoTFogStream> getListFoTFogStream() {
+        return listFoTFogStream;
+    }
+
+    /**
+     * @param listFoTFogStream the listFoTFogStream to set
+     */
+    public void setListFoTFogStream(List<FoTFogStream> listFoTFogStream) {
+        this.listFoTFogStream = listFoTFogStream;
+    }
+
+    /**
+     * @return the kafkaConsumerConfig
+     */
+    public KafkaConsumerConfig getKafkaConsumerConfig() {
+        return kafkaConsumerConfig;
+    }
+
+    /**
+     * @param kafkaConsumerConfig the kafkaConsumerConfig to set
+     */
+    public void setKafkaConsumerConfig(KafkaConsumerConfig kafkaConsumerConfig) {
+        this.kafkaConsumerConfig = kafkaConsumerConfig;
+    }
+
+    /**
+     * @return the pathLog
+     */
+    public String getPathLog() {
+        return pathLog;
+    }
+
+    /**
+     * @param pathLog the pathLog to set
+     */
+    public void setPathLog(String pathLog) {
+        this.pathLog = pathLog;
+    }
+    
 }

@@ -19,22 +19,22 @@
  http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
  http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
 
-    <bean id="KafkaConsumerConfig" class="br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaConsumerConfig" init-method="init" destroy-method="disconnect">
+<!--    <bean id="KafkaConsumerConfig" class="br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaConsumerConfig" init-method="init" destroy-method="disconnect">
         <property name="KAFKA_BROKERS" value="${KAFKA-BROKERS-DEFAUL-FOG}" />            
     </bean>
     
     <bean id="ProducerCreatorKafka" class="br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.ProducerCreatorKafka" init-method="init" destroy-method="disconnect">
         <property name="KAFKA_BROKERS" value="${KAFKA-BROKERS-DEFAUL-CLOUD}" />            
-    </bean>
+    </bean>-->
 
     
   
     <bean id="MainStreamController" class="br.ufba.dcc.wiser.fotstream.soft_iot.server.controller.MainStreamController" init-method="init" destroy-method="disconnect">
                    
-            <property name="KafkaConsumerConfig" ref="KafkaConsumerConfig" />
-            <property name="debugModeValue" value="${debugMode}" />
-            <property name="defaultCollectionTime" value="${DefaultCollectionTimeSensorData}" />
-            <property name="defaultPublishingTime" value="${DefaultPublishingTimeSensorData}" />
+            <!-- <property name="kafkaConsumerConfig" ref="KafkaConsumerConfig" />-->
+            <!-- <property name="debugModeValue" value="${debugMode}"/> -->
+            <!-- <property name="defaultCollectionTime" value="${DefaultCollectionTimeSensorData}"/>
+            <property name="defaultPublishingTime" value="${DefaultPublishingTimeSensorData}"/> -->
             <property name="fotStreamGateways" value="${FogsManagement}" />
             <property name="pathLog" value="${pathDefaultLog}" /> 
                     

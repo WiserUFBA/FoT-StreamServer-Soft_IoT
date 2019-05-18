@@ -19,7 +19,7 @@
  http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
  http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
 
-<!--  <bean id="KafkaConsumerConfig" class="br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaConsumerConfig" init-method="init" destroy-method="disconnect">
+    <!--<bean id="KafkaConsumerConfig" class="br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaConsumerConfig" init-method="init" destroy-method="disconnect">
         <property name="KAFKA_BROKERS" value="${KAFKA-BROKERS-DEFAUL-FOG}" />            
      </bean>
     
@@ -30,24 +30,19 @@
     <bean id="MainStreamController" class="br.ufba.dcc.wiser.fotstream.soft_iot.server.controller.MainStreamController" init-method="init" destroy-method="disconnect">
                     
                     
-<!--                    <property name="KafkaConsumerConfig" ref="KafkaConsumerConfig" />
-                    <property name="debugModeValue" value="${debugMode}" />
+                    <!-- <property name="KafkaConsumerConfig" ref="KafkaConsumerConfig" />-->
+                    <!-- <property name="debugModeValue" value="${debugMode}" />
                     <property name="defaultCollectionTime" value="${DefaultCollectionTimeSensorData}" />
-                    <property name="defaultPublishingTime" value="${DefaultPublishingTimeSensorData}" />
+                    <property name="defaultPublishingTime" value="${DefaultPublishingTimeSensorData}" /> -->
                     <property name="fotStreamGateways" value="${FogsManagement}" />
-                    <property name="pathLog" value="${pathDefaultLog}" />-->
+                    <property name="pathLog" value="${pathDefaultLog}" />
                                         
     </bean>
     
     	
-    <!--
-    <bean id="TatuStreamController" class="br.ufba.dcc.wiser.soft_iot.analytics.data.TatuStream"
-                    init-method="start">
-           
-    </bean>
-    -->
+   
     
-<!--    <cm:property-placeholder persistent-id="br.ufba.dcc.wiser.fotstream.soft_iot.server" update-strategy="reload">
+   <cm:property-placeholder persistent-id="br.ufba.dcc.wiser.fotstream.soft_iot.server" update-strategy="reload">
 		
                 <cm:default-properties>
 			
@@ -61,10 +56,7 @@
                         <cm:property name="KAFKA-BROKERS-DEFAUL-CLOUD" value="18.218.147.104:9092"/>
                         
 		</cm:default-properties>
-    </cm:property-placeholder>-->
-
-
-     <!--<service ref="StreamController" interface="br.ufba.dcc.wiser.soft_iot.analytics.edgent.StreamController"/>-->
+    </cm:property-placeholder>
 
 
 </blueprint>

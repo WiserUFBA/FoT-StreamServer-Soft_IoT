@@ -5,11 +5,10 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka;
 
+import br.ufba.dcc.wiser.fotstream.soft_iot.server.util.UtilDebug;
 import java.util.Properties;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.LongSerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 
 
 
@@ -47,17 +46,29 @@ public class KafkaConsumerConfig {
     
     public KafkaConsumer<Long, String> createConsumer() {
         Properties props = new Properties();
-        System.out.println(this.KAFKA_BROKERS);
-        System.out.println(this.CLIENT_ID);
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.KAFKA_BROKERS);
-        //props.put(ProducerConfig.CLIENT_ID_CONFIG, this.CLIENT_ID);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        props.put("group.id", "Demo_Group");
-        props.put("enable.auto.commit", "true");
-        props.put("auto.commit.internal.ms", "1000");
-        props.put("session.timeout.ms", "30000");
-        //props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, CustomPartitioner.class.getName());
+        try{
+        
+            
+            System.out.println(this.KAFKA_BROKERS);
+            System.out.println(this.CLIENT_ID);
+            props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this.KAFKA_BROKERS);
+            //props.put(ProducerConfig.CLIENT_ID_CONFIG, this.CLIENT_ID);
+            props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,  Class.forName("org.apache.kafka.common.serialization.LongDeserializer"));
+            props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, Class.forName("org.apache.kafka.common.serialization.StringDeserializer"));
+            props.put("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer");
+            props.put("group.id", "Demo_Group");
+            props.put("enable.auto.commit", "true");
+            props.put("auto.commit.internal.ms", "1000");
+            props.put("session.timeout.ms", "30000");
+            //props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, CustomPartitioner.class.getName());
+            
+            
+        }catch(Exception e){
+            UtilDebug.printDebugConsole("Error init KafkaConsumerConfig: " + e.getMessage());
+            UtilDebug.printError(e);
+        }
+        
+        Thread.currentThread().setContextClassLoader(null);
         return new KafkaConsumer<Long, String>(props);
     }
 

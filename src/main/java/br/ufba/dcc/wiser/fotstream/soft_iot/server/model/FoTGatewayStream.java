@@ -5,6 +5,7 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
+import br.ufba.dcc.wiser.fotstream.soft_iot.server.util.UtilDebug;
 import java.util.Collections;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
@@ -23,14 +24,23 @@ public class FoTGatewayStream {
     
     public FoTGatewayStream(KafkaConsumer consumer){
         this.consumer = consumer;
-        startConsumer();
+        //startConsumer();
     }
     
-    public void startConsumer(){
-         
-        String topic = "dev" + "." + this.FoTGatewayiD + ".*" ;
-        this.consumer.subscribe(Collections.singletonList(topic));
+    public FoTGatewayStream(){
         
+    }
+    
+    
+    public void startConsumer(){
+        try{ 
+            String topic = "dev" + "." + this.getFoTGatewayiD() + ".*" ;
+            System.out.println(topic);
+            this.consumer.subscribe(Collections.singletonList(topic));
+        }catch(Exception e){
+            UtilDebug.printDebugConsole("Error init FoTGatewayStream: " + e.getMessage());
+            UtilDebug.printError(e);
+        }
     }
     
     /**

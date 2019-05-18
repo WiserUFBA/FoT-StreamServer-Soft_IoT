@@ -59,7 +59,7 @@ public class MainStreamController {
     }
     
      public void disconnect(){
-       System.out.println("Disconnect Stream");
+       System.out.println("Disconnect MainStreamController FoT-StreamServer");
        
        
        //Thread.currentThread().getThreadGroup().interrupt();
@@ -101,62 +101,76 @@ public class MainStreamController {
         JsonElement element = parser.parse(this.getFotStreamGateways());
         JsonArray jarray = element.getAsJsonArray();
        
-         UtilDebug.printDebugConsole("Tamanho do array: " + jarray.size());
+        UtilDebug.printDebugConsole("Tamanho do array: " + jarray.size());
         
-        for (JsonElement jsonElement : jarray) {
-            if(jsonElement.isJsonObject()){
-                
-                System.out.println("Loop 1");
-                FoTFogStream fotFogStream = new FoTFogStream();
-                JsonObject fotElement = jsonElement.getAsJsonObject();
-                fotFogStream.setFogID(fotElement.get("id").getAsString());
-                fotFogStream.setType(fotElement.get("type").getAsString());
-                fotFogStream.setLatitude(fotElement.get("latitude").getAsFloat());
-                fotFogStream.setLongitude(fotElement.get("longitude").getAsFloat());
-                
-                UtilDebug.printDebugConsole(fotFogStream.getFogID());
-                  
-                JsonArray jsonArrayGateways = fotElement.getAsJsonArray("gateways");
-                List<FoTGatewayStream> listFoTGatewayStream = new ArrayList<FoTGatewayStream>();
-                
-                
-                for (JsonElement jsonElementSensor : jsonArrayGateways) {
-                    if(jsonElementSensor.isJsonObject()){
-                        JsonObject fotGateway = jsonElementSensor.getAsJsonObject();
-                        //String sensorID = fotGateway.get("id").getAsString();
-                        
-                        KafkaConsumer<Long, String> consumer = getKafkaConsumerConfig().createConsumer();
-                        FoTGatewayStream fotGatewayStream = new FoTGatewayStream(consumer);
-                        
-                        System.out.println(fotGateway.get("type").getAsString());
-                        System.out.println(fotGateway.get("latitude").getAsFloat());
-                        System.out.println(fotGateway.get("longitude").getAsFloat());
-                        
-                        
-                        fotGatewayStream.setType(fotGateway.get("type").getAsString());
-                        fotGatewayStream.setLatitude(fotGateway.get("latitude").getAsFloat());
-                        fotGatewayStream.setLongitude(fotGateway.get("longitude").getAsFloat());
-                        //fotGatewayStream.setConsumer(consumer);
-                        
-                        //fotSensorStream.sendTatuFlow();
-                        
-                        System.out.println("Loop 2");
-                        
-                        UtilDebug.printDebugConsole(fotGatewayStream.getFoTGatewayiD());
-                        UtilDebug.printDebugConsole(String.valueOf(fotGatewayStream.getType()));
-                        //UtilDebug.printDebugConsole(String.valueOf(fotGatewayStream.getPublishingTime()));
-                         
-                        
-                        
-                        listFoTGatewayStream.add(fotGatewayStream);
-                    }   
+        try{
+
+            for (JsonElement jsonElement : jarray) {
+                if(jsonElement.isJsonObject()){
+
+                    System.out.println("Loop 1");
+                    FoTFogStream fotFogStream = new FoTFogStream();
+                    JsonObject fotElement = jsonElement.getAsJsonObject();
+                    fotFogStream.setFogID(fotElement.get("id").getAsString());
+                    fotFogStream.setType(fotElement.get("type").getAsString());
+                    fotFogStream.setLatitude(fotElement.get("latitude").getAsFloat());
+                    fotFogStream.setLongitude(fotElement.get("longitude").getAsFloat());
+
+                    UtilDebug.printDebugConsole(fotFogStream.getFogID());
+
+                    JsonArray jsonArrayGateways = fotElement.getAsJsonArray("gateways");
+                    List<FoTGatewayStream> listFoTGatewayStream = new ArrayList<FoTGatewayStream>();
+
+
+                    for (JsonElement jsonElementSensor : jsonArrayGateways) {
+                        if(jsonElementSensor.isJsonObject()){
+                            JsonObject fotGateway = jsonElementSensor.getAsJsonObject();
+                            
+
+                            KafkaConsumer<Long, String> consumer = getKafkaConsumerConfig().createConsumer();
+                            FoTGatewayStream fotGatewayStream = new FoTGatewayStream(consumer);
+                            
+                            String ID = fotGateway.get("id").getAsString();
+                            String type = fotGateway.get("type").getAsString();
+                            float latitude = fotGateway.get("latitude").getAsFloat();
+                            float longitude = fotGateway.get("longitude").getAsFloat();
+                            
+                            System.out.println("Type: "+type);
+                            System.out.println(latitude);
+                            System.out.println(longitude);
+
+//                            fotGatewayStream.setFoTGatewayiD(ID);
+//                            fotGatewayStream.setType(type);
+//                            fotGatewayStream.setLatitude(latitude);
+//                            fotGatewayStream.setLongitude(longitude);
+//                            fotGatewayStream.startConsumer();
+                           
+                            //fotGatewayStream.setConsumer(consumer);
+
+                            //fotSensorStream.sendTatuFlow();
+
+                            System.out.println("Loop 2");
+
+                            UtilDebug.printDebugConsole(fotGatewayStream.getFoTGatewayiD());
+                            UtilDebug.printDebugConsole(String.valueOf(fotGatewayStream.getType()));
+                            //UtilDebug.printDebugConsole(String.valueOf(fotGatewayStream.getPublishingTime()));
+
+
+
+                            listFoTGatewayStream.add(fotGatewayStream);
+                        }   
+                    }
+
+
+                    fotFogStream.setListFoTGatewayStream(listFoTGatewayStream);
+                    fotFogStream.startStreamGatewayAnalysis();
+                    this.getListFoTFogStream().add(fotFogStream);
                 }
-                
-                
-                fotFogStream.setListFoTGatewayStream(listFoTGatewayStream);
-                fotFogStream.startStreamGatewayAnalysis();
-                this.getListFoTFogStream().add(fotFogStream);
             }
+        
+        }catch(Exception e){
+            UtilDebug.printDebugConsole("Error init loadFoTStreamGateway: " + e.getMessage());
+            UtilDebug.printError(e);
         }
     }
    

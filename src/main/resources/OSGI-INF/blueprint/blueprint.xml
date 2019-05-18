@@ -19,7 +19,7 @@
  http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
  http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
 
-<!--    <bean id="KafkaConsumerConfig" class="br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaConsumerConfig" init-method="init" destroy-method="disconnect">
+    <!--  <bean id="KafkaConsumerConfig" class="br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaConsumerConfig" init-method="init" destroy-method="disconnect">
         <property name="KAFKA_BROKERS" value="${KAFKA-BROKERS-DEFAUL-FOG}" />            
     </bean>
     
@@ -50,7 +50,7 @@
 			<cm:property name="NumberOfHoursDataStored" value="24" />
 			<cm:property name="debugMode" value="false" />
                         <cm:property name="FogsManagement" value="[]" />
-                        <!--<cm:property name="pathDefaultLog" value="/home/pi/log-karaf"/>-->
+                        <!-- <cm:property name="pathDefaultLog" value="/home/pi/log-karaf"/> -->
                         <cm:property name="pathDefaultLog" value="/home/brenno/Documentos/Log-karaf"/>
                         <cm:property name="KAFKA-BROKERS-DEFAUL-FOG" value="18.218.147.104:9092"/>
                         <cm:property name="KAFKA-BROKERS-DEFAUL-CLOUD" value="18.218.147.104:9092"/>

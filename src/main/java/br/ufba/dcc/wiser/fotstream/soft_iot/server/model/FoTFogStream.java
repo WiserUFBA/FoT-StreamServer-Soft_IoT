@@ -5,8 +5,10 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
+import br.ufba.dcc.wiser.fotstream.soft_iot.server.thread.KafkaConsumerThread;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.util.UtilDebug;
 import java.time.Duration;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -25,33 +27,31 @@ public class FoTFogStream {
     private float latitude;
     private float longitude;
     private List<FoTGatewayStream> listFoTGatewayStream;
-    
+    private List<Thread> listRunThreadConsumer;
     
     public FoTFogStream(){
         //startStreamGatewayAnalysis();
+        this.listRunThreadConsumer = new LinkedList<>();
     }
     
     public void startStreamGatewayAnalysis(){      
-       while(true){
+       
             for (FoTGatewayStream foTGatewayStream : listFoTGatewayStream) {
-                try {
- 
-                    ConsumerRecords<Long, String> records = foTGatewayStream.getConsumer().poll(Duration.ofMinutes(100));
-                    for (ConsumerRecord<Long, String> record : records){
-                        
-                        System.out.println("topic = " + record.topic() + "partition = " + record.partition() + "country = " + record.offset());
-                        System.out.println("offset = " + record.offset() + "key = " + record.key() + "value = " + record.value());
-                            
-                        
-                       
-                    }
-                    }finally {
-                        foTGatewayStream.getConsumer().close();
-                    }
+                
+                Thread consumerThread = new Thread(new KafkaConsumerThread(foTGatewayStream.getConsumer(), this.fogID));
+                consumerThread.start();
+                this.listRunThreadConsumer.add(consumerThread);
             
-            }
-        }
+            }    
+        
     
+    }
+    
+    public void stopThreads(){
+        listRunThreadConsumer.forEach((thread) -> {
+            System.out.println("Stop thread: "+thread.getName());
+            thread.interrupt();
+        });
     }
     /**
      * @return the fogID

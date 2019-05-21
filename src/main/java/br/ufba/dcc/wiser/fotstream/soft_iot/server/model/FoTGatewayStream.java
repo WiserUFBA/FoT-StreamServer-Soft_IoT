@@ -6,9 +6,11 @@
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.util.UtilDebug;
-import java.util.Collections;
+import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-
+import org.apache.kafka.common.TopicPartition;
+import java.util.Collection;
+import java.util.regex.Pattern;
 /**
  *
  * @author Brenno Mello <brennodemello.bm at gmail.com>
@@ -33,14 +35,37 @@ public class FoTGatewayStream {
     
     
     public void startConsumer(){
-        try{ 
+//        try{ 
+            ConsumerRebalanceListener listener = new ConsumerRebalanceListener() {
+
+			
+			public void onPartitionsRevoked(Collection<TopicPartition> partitions) {
+				
+			}
+
+			
+			public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
+				
+                        }
+             };
+		
+            
             String topic = "dev" + "." + this.getFoTGatewayiD() + ".*" ;
             System.out.println(topic);
-            this.consumer.subscribe(Collections.singletonList(topic));
-        }catch(Exception e){
-            UtilDebug.printDebugConsole("Error init FoTGatewayStream: " + e.getMessage());
-            UtilDebug.printError(e);
-        }
+            this.consumer.subscribe(Pattern.compile(topic), new ConsumerRebalanceListener() {
+			public void onPartitionsRevoked(Collection<TopicPartition> partitions) {
+				
+			}
+
+			
+			public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
+				
+                        }
+             });
+//        }catch(Exception e){
+//            UtilDebug.printDebugConsole("Error init FoTGatewayStream: " + e.getMessage());
+//            UtilDebug.printError(e);
+//        }
     }
     
     /**
@@ -82,7 +107,7 @@ public class FoTGatewayStream {
      * @param latitude the latitude to set
      */
     public void setLatitude(float latitude) {
-        this.setLatitude(latitude);
+        this.latitude = latitude;
     }
 
     /**
@@ -96,7 +121,7 @@ public class FoTGatewayStream {
      * @param longitude the longitude to set
      */
     public void setLongitude(float longitude) {
-        this.setLongitude(longitude);
+        this.longitude = longitude;
     }
     
      /**

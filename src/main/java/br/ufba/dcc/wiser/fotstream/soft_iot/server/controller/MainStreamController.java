@@ -14,6 +14,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
@@ -46,7 +47,8 @@ public class MainStreamController {
             UtilDebug.printDebugConsole("Init FoT-StreamServer Controller");
             UtilDebug.printDebugConsole(this.getFotStreamGateways());
             this.kafkaConsumerConfig = new KafkaConsumerConfig();
-
+            this.listFoTFogStream = new LinkedList<>();
+            
             loadFoTStreamGateway();
             //initKafkaConsumer();
             
@@ -60,7 +62,9 @@ public class MainStreamController {
     
      public void disconnect(){
        System.out.println("Disconnect MainStreamController FoT-StreamServer");
-       
+       listFoTFogStream.forEach((t) -> {
+               t.stopThreads();
+       });
        
        //Thread.currentThread().getThreadGroup().interrupt();
        //Thread.currentThread().getThreadGroup().destroy();
@@ -138,12 +142,13 @@ public class MainStreamController {
                             System.out.println("Type: "+type);
                             System.out.println(latitude);
                             System.out.println(longitude);
+                            System.out.println(ID);
 
-//                            fotGatewayStream.setFoTGatewayiD(ID);
-//                            fotGatewayStream.setType(type);
-//                            fotGatewayStream.setLatitude(latitude);
-//                            fotGatewayStream.setLongitude(longitude);
-//                            fotGatewayStream.startConsumer();
+                            fotGatewayStream.setFoTGatewayiD(ID);
+                            fotGatewayStream.setType(type);
+                            fotGatewayStream.setLatitude(latitude);
+                            fotGatewayStream.setLongitude(longitude);
+                            fotGatewayStream.startConsumer();
                            
                             //fotGatewayStream.setConsumer(consumer);
 

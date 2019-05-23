@@ -5,12 +5,14 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
-import br.ufba.dcc.wiser.fotstream.soft_iot.server.util.UtilDebug;
+
 import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 import java.util.Collection;
 import java.util.regex.Pattern;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.kstream.KStream;
 /**
  *
  * @author Brenno Mello <brennodemello.bm at gmail.com>
@@ -23,6 +25,8 @@ public class FoTGatewayStream {
     private float latitude;
     private float longitude;
     private KafkaConsumer<Long, String> consumer;
+    private KStream<Long, String> source; 
+    private StreamsBuilder builder;
     
     public FoTGatewayStream(KafkaConsumer consumer){
         this.consumer = consumer;
@@ -33,6 +37,12 @@ public class FoTGatewayStream {
         
     }
     
+     public void startConsumerKafkaStream(){
+         this.setBuilder(new StreamsBuilder());
+        String topic = "dev" + "." + this.getFoTGatewayiD() + ".*" ;
+        System.out.println(topic);
+        this.setSource(getBuilder().stream(topic));
+     }
     
     public void startConsumer(){
 //        try{ 
@@ -136,6 +146,34 @@ public class FoTGatewayStream {
      */
     public void setConsumer(KafkaConsumer<Long, String> consumer) {
         this.consumer = consumer;
+    }
+
+    /**
+     * @return the source
+     */
+    public KStream<Long, String> getSource() {
+        return source;
+    }
+
+    /**
+     * @param source the source to set
+     */
+    public void setSource(KStream<Long, String> source) {
+        this.source = source;
+    }
+
+    /**
+     * @return the builder
+     */
+    public StreamsBuilder getBuilder() {
+        return builder;
+    }
+
+    /**
+     * @param builder the builder to set
+     */
+    public void setBuilder(StreamsBuilder builder) {
+        this.builder = builder;
     }
     
     

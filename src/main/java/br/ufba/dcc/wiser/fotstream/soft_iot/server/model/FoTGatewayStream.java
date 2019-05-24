@@ -38,10 +38,11 @@ public class FoTGatewayStream {
     }
     
      public void startConsumerKafkaStream(){
-         this.setBuilder(new StreamsBuilder());
+        
+        this.builder = new StreamsBuilder();
         String topic = "dev" + "." + this.getFoTGatewayiD() + ".*" ;
         System.out.println(topic);
-        this.setSource(getBuilder().stream(topic));
+        this.source = this.builder.stream(Pattern.compile(topic));
      }
     
     public void startConsumer(){

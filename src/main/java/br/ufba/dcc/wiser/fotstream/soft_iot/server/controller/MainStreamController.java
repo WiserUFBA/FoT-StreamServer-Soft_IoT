@@ -148,8 +148,9 @@ public class MainStreamController {
                             fotGatewayStream.setType(type);
                             fotGatewayStream.setLatitude(latitude);
                             fotGatewayStream.setLongitude(longitude);
-                            fotGatewayStream.startConsumer();
-                           
+                            //fotGatewayStream.startConsumer();
+                            fotGatewayStream.startConsumerKafkaStream();
+                                    
                             //fotGatewayStream.setConsumer(consumer);
 
                             //fotSensorStream.sendTatuFlow();
@@ -168,7 +169,8 @@ public class MainStreamController {
 
 
                     fotFogStream.setListFoTGatewayStream(listFoTGatewayStream);
-                    fotFogStream.startStreamGatewayAnalysis();
+                    //fotFogStream.startStreamGatewayAnalysis();
+                    fotFogStream.startStreamGatewayAnalysisKafkaStream();
                     this.getListFoTFogStream().add(fotFogStream);
                 }
             }

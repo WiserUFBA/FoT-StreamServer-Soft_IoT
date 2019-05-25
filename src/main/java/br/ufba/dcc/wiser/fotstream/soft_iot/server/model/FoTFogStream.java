@@ -7,6 +7,7 @@ package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaConsumerStreamAPI;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.thread.KafkaConsumerThread;
+import br.ufba.dcc.wiser.fotstream.soft_iot.server.util.UtilDebug;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import java.util.LinkedList;
@@ -33,12 +34,16 @@ public class FoTFogStream {
     private KafkaStreams gatewayStreams;
     private KafkaConsumerStreamAPI kafkaConsumerStreamAPI;
     private List<KafkaStreams> listKafkaStreams;
+    private StreamsBuilder builder;
     
     public FoTFogStream(){
         //startStreamGatewayAnalysis();
         this.listRunThreadConsumer = new LinkedList<>();
         this.listKafkaConsumerThreads = new LinkedList<>();
+        this.listKafkaStreams = new LinkedList<>();
         this.kafkaConsumerStreamAPI = new KafkaConsumerStreamAPI();
+        //Thread.currentThread().setContextClassLoader(null);
+        //this.builder = new StreamsBuilder();
     }
      
      //{"delayFog": 194, "LatencyWindow": "197", "WindowSize": 200, "deviceId": "sc01", 
@@ -46,47 +51,52 @@ public class FoTFogStream {
      //"valueSensor": ["-45.215", "46.925", "0.855", "17.04", "19.115", "4.59", "16.625", "53.98", "16.21", "15.38"]}
      public void startStreamGatewayAnalysisKafkaStream(){
            for (FoTGatewayStream foTGatewayStream : listFoTGatewayStream) {
-               
-               StreamsBuilder builder = foTGatewayStream.getBuilder();
-               KStream<Long, String> source = foTGatewayStream.getSource();
-               
-               source.print(Printed.toSysOut());
-               
-               
-               KStream<Long, String> transformed = source.flatMap(
-                    // Here, we generate two output records for each input record.
-                    // We also change the key and value types.
-                    // Example: (345L, "Hello") -> ("HELLO", 1000), ("hello", 9000)
-                    (key, value) -> {
-                        System.out.println("Value: " + value);
-                        List<KeyValue<Long, String>> result = new LinkedList<>();
-                        JsonParser parser = new JsonParser();
-                        JsonElement element = parser.parse(value);
-                        if(element.isJsonObject()){
-                        
+               try{
+                    StreamsBuilder builder = foTGatewayStream.getBuilder();
+                    KStream<Long, String> source = foTGatewayStream.getSource();
 
-                            String sensor = element.getAsJsonObject().get("sensorId").getAsString();
-
-                            switch(sensor){
-                                    case "dustSensor":
-                                        System.out.println("Case: " + sensor);
-                                        break;
-                                    }
+                    source.print(Printed.toSysOut());
 
 
-                            result.add(KeyValue.pair(key, value));
+                    KStream<Long, String> transformed = source.flatMap(
+                         // Here, we generate two output records for each input record.
+                         // We also change the key and value types.
+                         // Example: (345L, "Hello") -> ("HELLO", 1000), ("hello", 9000)
+                         (key, value) -> {
+                             System.out.println("Value: " + value);
+                             List<KeyValue<Long, String>> result = new LinkedList<>();
+                             JsonParser parser = new JsonParser();
+                             JsonElement element = parser.parse(value);
+                             if(element.isJsonObject()){
 
-                        
-                        }
-                        return result;
-                    }
-                );
-               
-               transformed.print(Printed.toSysOut());
-               
-               KafkaStreams streams = new KafkaStreams(builder.build(), this.kafkaConsumerStreamAPI.getProps());
-               System.out.println("Start Kafka API: " + foTGatewayStream.getFoTGatewayiD());
-               streams.start();
+
+                                 String sensor = element.getAsJsonObject().get("sensorId").getAsString();
+
+                                 switch(sensor){
+                                         case "dustSensor":
+                                             System.out.println("Case: " + sensor);
+                                             break;
+                                         }
+
+
+                                 result.add(KeyValue.pair(key, value));
+
+
+                             }
+                             return result;
+                         }
+                     );
+
+                    transformed.print(Printed.toSysOut());
+                    Thread.currentThread().setContextClassLoader(null);
+                    KafkaStreams streams = new KafkaStreams(builder.build(), this.kafkaConsumerStreamAPI.getProps());
+                    System.out.println("Start Kafka API: " + foTGatewayStream.getFoTGatewayiD());
+                    this.listKafkaStreams.add(streams);
+                    streams.start();
+               }catch(Exception e){
+                   UtilDebug.printDebugConsole("Error init FoTFogStream: " + e.getMessage());
+                   UtilDebug.printError(e);
+               }
            }
            
            

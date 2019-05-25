@@ -33,12 +33,15 @@ public class FoTGatewayStream {
         //startConsumer();
     }
     
+    public FoTGatewayStream(StreamsBuilder builder){
+        this.builder = builder;
+    }
+    
     public FoTGatewayStream(){
         
     }
     
      public void startConsumerKafkaStream(){
-        
         this.builder = new StreamsBuilder();
         String topic = "dev" + "." + this.getFoTGatewayiD() + ".*" ;
         System.out.println(topic);

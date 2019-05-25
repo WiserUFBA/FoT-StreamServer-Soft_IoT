@@ -30,7 +30,8 @@ public class KafkaConsumerThread implements Runnable{
                     System.out.println("Run: " +  this.threadName);
                     
                     while(true){
-                            ConsumerRecords<Long, String> records = this.consumer.poll(Duration.ofSeconds(5));
+                            //ConsumerRecords<Long, String> records = this.consumer.poll(Duration.ofSeconds(5));
+                            ConsumerRecords<Long, String> records = this.consumer.poll(5);
                             for (ConsumerRecord<Long, String> record : records){
 
                                 System.out.println("topic = " + record.topic() + " partition = " + record.partition() + " country = " + record.offset());

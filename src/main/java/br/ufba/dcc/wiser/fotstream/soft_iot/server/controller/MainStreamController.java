@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.streams.StreamsBuilder;
 
 
 /**
@@ -35,6 +36,7 @@ public class MainStreamController {
     private List<FoTFogStream> listFoTFogStream;
     private KafkaConsumerConfig kafkaConsumerConfig;
     private String pathLog;
+    private StreamsBuilder builder;
     
     public MainStreamController(){
         
@@ -48,7 +50,7 @@ public class MainStreamController {
             UtilDebug.printDebugConsole(this.getFotStreamGateways());
             this.kafkaConsumerConfig = new KafkaConsumerConfig();
             this.listFoTFogStream = new LinkedList<>();
-            
+            this.builder = new StreamsBuilder();
             loadFoTStreamGateway();
             //initKafkaConsumer();
             
@@ -132,7 +134,8 @@ public class MainStreamController {
                             
 
                             KafkaConsumer<Long, String> consumer = getKafkaConsumerConfig().createConsumer();
-                            FoTGatewayStream fotGatewayStream = new FoTGatewayStream(consumer);
+                            
+                            FoTGatewayStream fotGatewayStream = new FoTGatewayStream(this.builder);
                             
                             String ID = fotGateway.get("id").getAsString();
                             String type = fotGateway.get("type").getAsString();

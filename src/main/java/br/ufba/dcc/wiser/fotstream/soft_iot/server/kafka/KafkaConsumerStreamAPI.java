@@ -46,6 +46,8 @@ public class KafkaConsumerStreamAPI {
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Long().getClass().getName());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        props.put("enable.auto.commit", "true");
+        props.put("auto.commit.internal.ms", "1000");
         //props.put("default.deserialization.exception.handler", LogAndContinueExceptionHandler.class);
         //props.put(StreamsConfig., props)
         return props;

@@ -6,17 +6,24 @@
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaConsumerStreamAPI;
+import br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaStreamProcessor;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.thread.KafkaConsumerThread;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.util.UtilDebug;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Printed;
+
+
 
 /**
  *
@@ -35,6 +42,8 @@ public class FoTFogStream {
     private KafkaConsumerStreamAPI kafkaConsumerStreamAPI;
     private List<KafkaStreams> listKafkaStreams;
     private StreamsBuilder builder;
+    private KafkaStreams streams;
+    
     
     public FoTFogStream(){
         //startStreamGatewayAnalysis();
@@ -43,78 +52,139 @@ public class FoTFogStream {
         this.listKafkaStreams = new LinkedList<>();
         this.kafkaConsumerStreamAPI = new KafkaConsumerStreamAPI();
         //Thread.currentThread().setContextClassLoader(null);
-        //this.builder = new StreamsBuilder();
+        
+    }
+    
+    public FoTFogStream(StreamsBuilder builder){
+        //startStreamGatewayAnalysis();
+        this.listRunThreadConsumer = new LinkedList<>();
+        this.listKafkaConsumerThreads = new LinkedList<>();
+        this.listKafkaStreams = new LinkedList<>();
+        this.kafkaConsumerStreamAPI = new KafkaConsumerStreamAPI();
+        this.builder = builder;
+        
     }
      
      //{"delayFog": 194, "LatencyWindow": "197", "WindowSize": 200, "deviceId": "sc01", 
      //"localDateTime": "2019-01-17T16:46:07.508", "sensorId": "dustSensor", 
      //"valueSensor": ["-45.215", "46.925", "0.855", "17.04", "19.115", "4.59", "16.625", "53.98", "16.21", "15.38"]}
      public void startStreamGatewayAnalysisKafkaStream(){
-           for (FoTGatewayStream foTGatewayStream : listFoTGatewayStream) {
-               try{
-                    StreamsBuilder builder = foTGatewayStream.getBuilder();
-                    KStream<Long, String> source = foTGatewayStream.getSource();
-
-                    source.print(Printed.toSysOut());
-
-
-                    KStream<Long, String> transformed = source.flatMap(
-                         // Here, we generate two output records for each input record.
-                         // We also change the key and value types.
-                         // Example: (345L, "Hello") -> ("HELLO", 1000), ("hello", 9000)
-                         (key, value) -> {
-                             System.out.println("Value: " + value);
-                             List<KeyValue<Long, String>> result = new LinkedList<>();
-                             JsonParser parser = new JsonParser();
-                             JsonElement element = parser.parse(value);
-                             if(element.isJsonObject()){
-
-
-                                 String sensor = element.getAsJsonObject().get("sensorId").getAsString();
-
-                                 switch(sensor){
-                                         case "dustSensor":
-                                             System.out.println("Case: " + sensor);
-                                             break;
-                                         }
-
-
-                                 result.add(KeyValue.pair(key, value));
-
-
-                             }
-                             return result;
-                         }
-                     );
-
-                    transformed.print(Printed.toSysOut());
+            //StreamsBuilder builderLocal = new StreamsBuilder();
+            //KStream<Long, String> source = builderLocal.stream(Pattern.compile("dev.Gateway02.*"));
+            //KStream<Long, String> source2 = builderLocal.stream(Pattern.compile("dev.Gateway01.*"));
+            //source.print(Printed.toSysOut());
+            //source2.print(Printed.toSysOut());
+            //Topology topology = builderLocal.build();
+            
+            //KStream<Long, String> source = null;
+            
+            List<KStream<Long, String>> listSources = new LinkedList<>();
+            for (FoTGatewayStream foTGatewayStream : listFoTGatewayStream) {
                     Thread.currentThread().setContextClassLoader(null);
-                    KafkaStreams streams = new KafkaStreams(builder.build(), this.kafkaConsumerStreamAPI.getProps());
-                    System.out.println("Start Kafka API: " + foTGatewayStream.getFoTGatewayiD());
-                    this.listKafkaStreams.add(streams);
-                    streams.start();
-               }catch(Exception e){
-                   UtilDebug.printDebugConsole("Error init FoTFogStream: " + e.getMessage());
-                   UtilDebug.printError(e);
-               }
-           }
+                    Thread thread = new Thread() {
+					public void run() {
+                                                
+                                                KStream<Long, String> source = null;
+                                                StreamsBuilder builderLocal = new StreamsBuilder();
+                                                String topic = "dev" + "." + foTGatewayStream.getFoTGatewayiD() + ".*";
+                                                System.out.println("topic FoTFog: "+ Pattern.compile(topic).toString());
+                                                source = builderLocal.stream(Pattern.compile(topic));
+
+                                                source.print(Printed.toSysOut());
+                                                //topology.addSource(foTGatewayStream.getFoTGatewayiD(), Pattern.compile(topic));
+                                                //topology.addProcessor("Id" + foTGatewayStream.getFoTGatewayiD(), KafkaStreamProcessor::new, foTGatewayStream.getFoTGatewayiD());
+                                                //listSources.add(source);
+
+
+                        //                        KStream<Long, String> transformed = source.flatMap(
+                        //                               // Here, we generate two output records for each input record.
+                        //                              // We also change the key and value types.
+                        //                             // Example: (345L, "Hello") -> ("HELLO", 1000), ("hello", 9000)
+                        //                             (key, value) -> {
+                        //                                 //System.out.println(topic + " " + "Value: " + value);
+                        //                                 List<KeyValue<Long, String>> result = new LinkedList<>();
+                        //                                 JsonParser parser = new JsonParser();
+                        //                                 JsonElement element = parser.parse(value);
+                        //                                 if(element.isJsonObject()){
+                        //
+                        //
+                        //                                     String sensor = element.getAsJsonObject().get("sensorId").getAsString();
+                        //
+                        //                                     switch(sensor){
+                        //                                             case "dustSensor":
+                        //                                                 System.out.println("Case: " + sensor);
+                        //                                                 break;
+                        //                                             }
+                        //
+                        //
+                        //                                     result.add(KeyValue.pair(key, value));
+                        //
+                        //
+                        //                                 }
+                        //                                 return result;
+                        //                             }
+                        //                         );
+                        //
+                        //                        transformed.print(Printed.toFile("/home/brenno/Documentos/log.kafka.txt"));                     
+                                                  try{  
+                                                    Thread.sleep(5000);
+                                                  }catch(Exception e){
+                                                    e.printStackTrace();
+                                                  }
+
+                                                  
+                                                  KafkaStreams streamLocal = new KafkaStreams(builderLocal.build(), kafkaConsumerStreamAPI.getProps());
+                                                  streamLocal.cleanUp();
+                                                  streamLocal.start();
+                                                  System.out.println("Start Kafka API");
+                                                  Thread.currentThread().setContextClassLoader(null);  
+                                                }
+                                        };      
+                        thread.start();
+                        this.listRunThreadConsumer.add(thread);	
+		}
+		
+//                          KafkaStreams streamLocal = new KafkaStreams(builderLocal.build(), this.kafkaConsumerStreamAPI.getProps());
+//                          streamLocal.cleanUp();
+//                          streamLocal.start();
+//                          System.out.println("Start Kafka API");
+
+                            
+                            //Thread.currentThread().setContextClassLoader(null);
+                            //this.streams = new KafkaStreams(topology, this.kafkaConsumerStreamAPI.getProps());
+                            //System.out.println("Start Kafka API");
+                            //this.listKafkaStreams.add(streams);
+                            //this.streams.cleanUp();
+                            //this.streams.start();
+               
+            }
+        
            
            
-     }
+     
     
     public void startStreamGatewayAnalysis(){      
-       
+            Map<String, List<String>> mapData = new HashMap<String, List<String>> ();
             for (FoTGatewayStream foTGatewayStream : listFoTGatewayStream) {
                 
-                KafkaConsumerThread kafkaConsumerThread = new KafkaConsumerThread(foTGatewayStream.getConsumer(), this.fogID);
+                KafkaConsumerThread kafkaConsumerThread = new KafkaConsumerThread(foTGatewayStream.getConsumer(), this.fogID, mapData);
                 Thread consumerThread = new Thread(kafkaConsumerThread);
                 consumerThread.start();
                 this.listRunThreadConsumer.add(consumerThread);
                 this.listKafkaConsumerThreads.add(kafkaConsumerThread);
             
-            }    
-            
-    
+            }
+            System.out.println("Main Thread");
+//            while(true){
+//                for (KafkaConsumerThread kafka : listKafkaConsumerThreads) {
+//                    try{  
+//                        Thread.sleep(5000);
+//                    }catch(Exception e){
+//                        e.printStackTrace();
+//                    }
+//                    System.out.println("Data: "+ kafka.getData());
+//                }
+//            }
     }
     
     public void stopStream(){
@@ -127,6 +197,11 @@ public class FoTFogStream {
             thread.interrupt();
         });
     }
+    
+    public void stopKafkaStream(){
+        this.streams.close();
+    }
+    
     /**
      * @return the fogID
      */

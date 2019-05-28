@@ -42,28 +42,14 @@ public class FoTGatewayStream {
     }
     
      public void startConsumerKafkaStream(){
-        this.builder = new StreamsBuilder();
-        String topic = "dev" + "." + this.getFoTGatewayiD() + ".*" ;
-        System.out.println(topic);
+        //this.builder = new StreamsBuilder();
+        String topic = "dev" + "." + this.getFoTGatewayiD() + ".*";
+        //System.out.println(topic);
         this.source = this.builder.stream(Pattern.compile(topic));
      }
     
     public void startConsumer(){
-//        try{ 
-            ConsumerRebalanceListener listener = new ConsumerRebalanceListener() {
-
-			
-			public void onPartitionsRevoked(Collection<TopicPartition> partitions) {
-				
-			}
-
-			
-			public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
-				
-                        }
-             };
-		
-            
+//        try{ 	            
             String topic = "dev" + "." + this.getFoTGatewayiD() + ".*" ;
             System.out.println(topic);
             this.consumer.subscribe(Pattern.compile(topic), new ConsumerRebalanceListener() {
@@ -156,7 +142,7 @@ public class FoTGatewayStream {
      * @return the source
      */
     public KStream<Long, String> getSource() {
-        return source;
+        return this.source;
     }
 
     /**

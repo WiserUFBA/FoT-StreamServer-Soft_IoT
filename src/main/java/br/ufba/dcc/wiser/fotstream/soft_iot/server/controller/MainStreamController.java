@@ -65,6 +65,7 @@ public class MainStreamController {
      public void disconnect(){
        System.out.println("Disconnect MainStreamController FoT-StreamServer");
        listFoTFogStream.forEach((t) -> {
+               t.stopKafkaStream();
                t.stopThreads();
        });
        
@@ -135,7 +136,7 @@ public class MainStreamController {
 
                             KafkaConsumer<Long, String> consumer = getKafkaConsumerConfig().createConsumer();
                             
-                            FoTGatewayStream fotGatewayStream = new FoTGatewayStream(this.builder);
+                            FoTGatewayStream fotGatewayStream = new FoTGatewayStream(consumer);
                             
                             String ID = fotGateway.get("id").getAsString();
                             String type = fotGateway.get("type").getAsString();
@@ -151,8 +152,8 @@ public class MainStreamController {
                             fotGatewayStream.setType(type);
                             fotGatewayStream.setLatitude(latitude);
                             fotGatewayStream.setLongitude(longitude);
-                            //fotGatewayStream.startConsumer();
-                            fotGatewayStream.startConsumerKafkaStream();
+                            fotGatewayStream.startConsumer();
+                            //fotGatewayStream.startConsumerKafkaStream();
                                     
                             //fotGatewayStream.setConsumer(consumer);
 
@@ -172,8 +173,8 @@ public class MainStreamController {
 
 
                     fotFogStream.setListFoTGatewayStream(listFoTGatewayStream);
-                    //fotFogStream.startStreamGatewayAnalysis();
-                    fotFogStream.startStreamGatewayAnalysisKafkaStream();
+                    fotFogStream.startStreamGatewayAnalysis();
+                    //fotFogStream.startStreamGatewayAnalysisKafkaStream();
                     this.getListFoTFogStream().add(fotFogStream);
                 }
             }

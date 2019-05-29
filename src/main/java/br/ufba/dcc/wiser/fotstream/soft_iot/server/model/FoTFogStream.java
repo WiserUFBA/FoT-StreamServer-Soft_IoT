@@ -9,6 +9,7 @@ import br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaConsumerStreamAPI;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaStreamProcessor;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.thread.KafkaConsumerThread;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.util.UtilDebug;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.record.Record;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -43,7 +46,9 @@ public class FoTFogStream {
     private List<KafkaStreams> listKafkaStreams;
     private StreamsBuilder builder;
     private KafkaStreams streams;
-    
+    private List<SensorData> listSensorData;
+    private JsonParser parser;
+    private Map<String, List<String>> mapData;
     
     public FoTFogStream(){
         //startStreamGatewayAnalysis();
@@ -51,7 +56,9 @@ public class FoTFogStream {
         this.listKafkaConsumerThreads = new LinkedList<>();
         this.listKafkaStreams = new LinkedList<>();
         this.kafkaConsumerStreamAPI = new KafkaConsumerStreamAPI();
-        //Thread.currentThread().setContextClassLoader(null);
+        this.listSensorData = new LinkedList<>();
+        this.parser = new JsonParser();
+        this.mapData = new HashMap<String, List<String>> ();
         
     }
     
@@ -65,9 +72,7 @@ public class FoTFogStream {
         
     }
      
-     //{"delayFog": 194, "LatencyWindow": "197", "WindowSize": 200, "deviceId": "sc01", 
-     //"localDateTime": "2019-01-17T16:46:07.508", "sensorId": "dustSensor", 
-     //"valueSensor": ["-45.215", "46.925", "0.855", "17.04", "19.115", "4.59", "16.625", "53.98", "16.21", "15.38"]}
+     
      public void startStreamGatewayAnalysisKafkaStream(){
             //StreamsBuilder builderLocal = new StreamsBuilder();
             //KStream<Long, String> source = builderLocal.stream(Pattern.compile("dev.Gateway02.*"));
@@ -158,23 +163,56 @@ public class FoTFogStream {
                             //this.streams.start();
                
             }
+    
+    //{"delayFog": 194, "LatencyWindow": "197", "WindowSize": 200, "deviceId": "sc01", 
+    //"localDateTime": "2019-01-17T16:46:07.508", "sensorId": "dustSensor", 
+    //"valueSensor": ["-45.215", "46.925", "0.855", "17.04", "19.115", "4.59", "16.625", "53.98", "16.21", "15.38"]}
+     
+     //"dev" + "." + this.fotDeviceStream.getGatewayID() + "." + this.fotDeviceStream.getDeviceId() + "." + this.Sensorid;
+    public synchronized void inputData(ConsumerRecord<Long, String> record){
+        /*
+        list.stream().forEach((t) -> {
+           this.listSensorData.add(t);
+        });
         
-           
+        this.listSensorData.forEach((t) -> {
+           System.out.println("id: " + t.getGatewayID() + " value: " + t.getValue());
+        });
+        System.out.println();
+        */  
+        try{
+            String topicSplit [] = record.topic().split(".");
+            JsonElement element = this.parser.parse(record.value());
+            if(element.isJsonObject()){
+                JsonArray jarray = element.getAsJsonArray();
+                String sensor = topicSplit[4];
+
+                //this.mapData.put(sensor, value);
+            }else{
+                System.out.println(record.value());
+            }
+        }catch(Exception e){
+            UtilDebug.printDebugConsole("Error init FoTFogStream: " + e.getMessage());
+            UtilDebug.printError(e);
+        }
+       
+    }
            
      
     
     public void startStreamGatewayAnalysis(){      
-            Map<String, List<String>> mapData = new HashMap<String, List<String>> ();
+            
             for (FoTGatewayStream foTGatewayStream : listFoTGatewayStream) {
-                
-                KafkaConsumerThread kafkaConsumerThread = new KafkaConsumerThread(foTGatewayStream.getConsumer(), this.fogID, mapData);
+                //Thread.currentThread().setContextClassLoader(null);
+                KafkaConsumerThread kafkaConsumerThread = new KafkaConsumerThread(foTGatewayStream.getConsumer(), foTGatewayStream.getFoTGatewayiD(), this);
                 Thread consumerThread = new Thread(kafkaConsumerThread);
                 consumerThread.start();
                 this.listRunThreadConsumer.add(consumerThread);
-                this.listKafkaConsumerThreads.add(kafkaConsumerThread);
+                //this.listKafkaConsumerThreads.add(kafkaConsumerThread);
             
             }
-            System.out.println("Main Thread");
+            
+            
 //            while(true){
 //                for (KafkaConsumerThread kafka : listKafkaConsumerThreads) {
 //                    try{  
@@ -194,7 +232,7 @@ public class FoTFogStream {
     public void stopThreads(){
         listRunThreadConsumer.forEach((thread) -> {
             System.out.println("Stop thread: "+thread.getName());
-            thread.interrupt();
+            thread.stop();
         });
     }
     

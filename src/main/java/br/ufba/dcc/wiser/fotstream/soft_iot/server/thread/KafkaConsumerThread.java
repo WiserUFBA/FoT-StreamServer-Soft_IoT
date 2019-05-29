@@ -5,6 +5,8 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.thread;
 
+import br.ufba.dcc.wiser.fotstream.soft_iot.server.model.FoTFogStream;
+import br.ufba.dcc.wiser.fotstream.soft_iot.server.model.SensorData;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -23,10 +25,17 @@ public class KafkaConsumerThread implements Runnable{
     private String threadName;  
     private KafkaConsumer<Long, String> consumer;
     private Map<String, List<String>> data;
+    private FoTFogStream foTFogStream;
     
     public KafkaConsumerThread(KafkaConsumer consumer, String name){
         this.threadName = name;
         this.consumer = consumer;
+    }   
+    
+    public KafkaConsumerThread(KafkaConsumer consumer, String name, FoTFogStream foTFogStream){
+        this.threadName = name;
+        this.consumer = consumer;
+        this.foTFogStream = foTFogStream;
     }    
     
     public KafkaConsumerThread(KafkaConsumer consumer, String name, Map<String, List<String>> data){
@@ -41,6 +50,7 @@ public class KafkaConsumerThread implements Runnable{
                     System.out.println("Run: " +  this.threadName);
                     
                     while(true){
+                            
                             ConsumerRecords<Long, String> records = this.consumer.poll(Duration.ofSeconds(5));
                             //ConsumerRecords<Long, String> records = this.consumer.poll(5);
                             for (ConsumerRecord<Long, String> record : records){
@@ -48,14 +58,17 @@ public class KafkaConsumerThread implements Runnable{
                                 System.out.println("topic = " + record.topic() + " partition = " + record.partition() + " country = " + record.offset());
                                 System.out.println(" offset = " + record.offset() + " key = " + record.key() + " value = " + record.value());
                                 
-                                LinkedList<String> lista = new LinkedList<>();
-                                lista.add(record.value());
-                                this.getData().put("data", lista);
+                                //LinkedList<SensorData> list = new LinkedList<>();
+                                //SensorData sensorData = new SensorData(record.value());
+                                //sensorData.setGatewayID(record.topic());
+                                //list.add(sensorData);
+                                foTFogStream.inputData(record);
                                 
                             }
                     }    
        
         }finally {
+            
             this.consumer.close();
         }
                 

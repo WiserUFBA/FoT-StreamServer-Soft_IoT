@@ -64,8 +64,7 @@ public class MainStreamController {
     
      public void disconnect(){
        System.out.println("Disconnect MainStreamController FoT-StreamServer");
-       listFoTFogStream.forEach((t) -> {
-               t.stopKafkaStream();
+       this.listFoTFogStream.forEach((t) -> {
                t.stopThreads();
        });
        

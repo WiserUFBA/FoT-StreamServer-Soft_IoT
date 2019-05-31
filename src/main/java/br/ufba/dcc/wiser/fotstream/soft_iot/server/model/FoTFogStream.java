@@ -201,8 +201,7 @@ public class FoTFogStream {
                     this.mapData.put(typeSensor, new FoTStreamConcepDrift());
                 } 
                 
-                
-                
+                             
                 for (JsonElement jsonElementSensor : jsonArray) {
                     double data = jsonElementSensor.getAsDouble();
                     SensorData sensorData = new SensorData(jsonElementSensor.getAsString());

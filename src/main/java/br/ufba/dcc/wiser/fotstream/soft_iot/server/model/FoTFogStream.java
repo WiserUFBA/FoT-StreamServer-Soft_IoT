@@ -5,12 +5,14 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
+import br.ufba.dcc.wiser.fotstream.soft_iot.server.conceptDrift.CusumDM;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaConsumerStreamAPI;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.kafka.KafkaStreamProcessor;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.thread.KafkaConsumerThread;
 import br.ufba.dcc.wiser.fotstream.soft_iot.server.util.UtilDebug;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -48,7 +50,9 @@ public class FoTFogStream {
     private KafkaStreams streams;
     private List<SensorData> listSensorData;
     private JsonParser parser;
-    private Map<String, List<String>> mapData;
+    private Map<String, FoTStreamConcepDrift>mapData;
+    private CusumDM detectorConcepDrift;
+    private boolean changeDetector;
     
     public FoTFogStream(){
         //startStreamGatewayAnalysis();
@@ -58,7 +62,7 @@ public class FoTFogStream {
         this.kafkaConsumerStreamAPI = new KafkaConsumerStreamAPI();
         this.listSensorData = new LinkedList<>();
         this.parser = new JsonParser();
-        this.mapData = new HashMap<String, List<String>> ();
+        this.mapData = new HashMap<String, FoTStreamConcepDrift> ();
         
     }
     
@@ -168,7 +172,7 @@ public class FoTFogStream {
     //"localDateTime": "2019-01-17T16:46:07.508", "sensorId": "dustSensor", 
     //"valueSensor": ["-45.215", "46.925", "0.855", "17.04", "19.115", "4.59", "16.625", "53.98", "16.21", "15.38"]}
      
-     //"dev" + "." + this.fotDeviceStream.getGatewayID() + "." + this.fotDeviceStream.getDeviceId() + "." + this.Sensorid;
+    //"dev" + "." + this.fotDeviceStream.getGatewayID() + "." + this.fotDeviceStream.getDeviceId() + "." + this.Sensorid;
     public synchronized void inputData(ConsumerRecord<Long, String> record){
         /*
         list.stream().forEach((t) -> {
@@ -181,16 +185,55 @@ public class FoTFogStream {
         System.out.println();
         */  
         try{
-            String topicSplit [] = record.topic().split(".");
+            //String topicSplit [] = record.topic().split(".");
             JsonElement element = this.parser.parse(record.value());
             if(element.isJsonObject()){
-                JsonArray jarray = element.getAsJsonArray();
-                String sensor = topicSplit[4];
-
-                //this.mapData.put(sensor, value);
+                JsonObject jsonObject = element.getAsJsonObject();
+                String typeSensor = jsonObject.get("type").getAsString();
+                System.out.println("Sensor: " + typeSensor);
+                JsonArray jsonArray = jsonObject.get("valueSensor").getAsJsonArray();
+                List<SensorData> listData = new LinkedList<SensorData>();
+                
+                FoTStreamConcepDrift fotStreamConceptDriftOld = this.mapData.get(typeSensor);
+                if(fotStreamConceptDriftOld != null){
+                    fotStreamConceptDriftOld.addAll(listData);
+                }else{
+                    this.mapData.put(typeSensor, new FoTStreamConcepDrift());
+                } 
+                
+                
+                
+                for (JsonElement jsonElementSensor : jsonArray) {
+                    double data = jsonElementSensor.getAsDouble();
+                    SensorData sensorData = new SensorData(jsonElementSensor.getAsString());
+                    listData.add(sensorData);
+                    this.detectorConcepDrift.input(data);
+                    if(this.detectorConcepDrift.getChange()){
+                        this.changeDetector = true;
+                    }
+                }
+                
+                
+                /*
+                this.mapData.forEach((key, value) -> {
+                    if (value.size() > 50) {
+                        value.stream().forEach((list) -> {
+                            this.detectorConcepDrift.input(latitude);
+                            
+                        });
+                    }
+                });
+                */
+                
+                if(this.changeDetector){
+                    this.changeDetector = false;
+                    System.out.print("Change detected");
+                }
+                
             }else{
                 System.out.println(record.value());
             }
+            
         }catch(Exception e){
             UtilDebug.printDebugConsole("Error init FoTFogStream: " + e.getMessage());
             UtilDebug.printError(e);
@@ -198,7 +241,9 @@ public class FoTFogStream {
        
     }
            
-     
+    public void runModelTensorFlow(){
+        
+    }
     
     public void startStreamGatewayAnalysis(){      
             

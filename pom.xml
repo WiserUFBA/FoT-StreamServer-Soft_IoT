@@ -101,20 +101,20 @@
             <scope>compile</scope>
         </dependency>
       
-<!--        <dependency>
+       <dependency>
             <groupId>org.tensorflow</groupId>
             <artifactId>tensorflow</artifactId>
             <version>1.13.1</version>
             <scope>compile</scope>
-        </dependency>-->
+        </dependency>
         
-        <!-- https://mvnrepository.com/artifact/org.tensorflow/tensorflow-lite -->
+<!--         https://mvnrepository.com/artifact/org.tensorflow/tensorflow-lite 
         <dependency>
             <groupId>org.tensorflow</groupId>
             <artifactId>tensorflow-lite</artifactId>
             <version>1.10.0</version>
             <scope>compile</scope>
-        </dependency>
+        </dependency>-->
 
         
     </dependencies>

@@ -192,42 +192,39 @@ public class FoTFogStream {
                 String typeSensor = jsonObject.get("type").getAsString();
                 System.out.println("Sensor: " + typeSensor);
                 JsonArray jsonArray = jsonObject.get("valueSensor").getAsJsonArray();
-                List<SensorData> listData = new LinkedList<SensorData>();
+                
                 
                 FoTStreamConcepDrift fotStreamConceptDriftOld = this.mapData.get(typeSensor);
-                if(fotStreamConceptDriftOld != null){
-                    fotStreamConceptDriftOld.addAll(listData);
-                }else{
-                    this.mapData.put(typeSensor, new FoTStreamConcepDrift());
+                if(fotStreamConceptDriftOld == null){
+                   fotStreamConceptDriftOld = new FoTStreamConcepDrift();
+                   this.mapData.put(typeSensor, fotStreamConceptDriftOld);
                 } 
                 
-                             
+                List<SensorData> listData = new LinkedList<SensorData>();     
                 for (JsonElement jsonElementSensor : jsonArray) {
                     double data = jsonElementSensor.getAsDouble();
                     SensorData sensorData = new SensorData(jsonElementSensor.getAsString());
                     listData.add(sensorData);
-                    this.detectorConcepDrift.input(data);
-                    if(this.detectorConcepDrift.getChange()){
-                        this.changeDetector = true;
-                    }
+                    fotStreamConceptDriftOld.input(data);
+//                    if(fotStreamConceptDriftOld.getChange()){
+//                        this.changeDetector = true;
+//                    }
                 }
                 
                 
-                /*
+                
                 this.mapData.forEach((key, value) -> {
-                    if (value.size() > 50) {
-                        value.stream().forEach((list) -> {
-                            this.detectorConcepDrift.input(latitude);
-                            
-                        });
+                    if(value.getChange){
+                        System.out.println("Sensor: " + key + "Change detected");
+                        value.setChange(false);
                     }
                 });
-                */
                 
-                if(this.changeDetector){
-                    this.changeDetector = false;
-                    System.out.print("Change detected");
-                }
+                
+//                if(this.changeDetector){
+//                    this.changeDetector = false;
+//                    System.out.print("Change detected");
+//                }
                 
             }else{
                 System.out.println(record.value());

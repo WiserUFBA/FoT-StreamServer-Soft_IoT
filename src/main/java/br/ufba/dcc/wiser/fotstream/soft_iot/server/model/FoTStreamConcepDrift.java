@@ -5,6 +5,7 @@
  */
 package br.ufba.dcc.wiser.fotstream.soft_iot.server.model;
 
+import br.ufba.dcc.wiser.fotstream.soft_iot.server.conceptDrift.CusumDM;
 import java.util.List;
 
 /**
@@ -12,5 +13,13 @@ import java.util.List;
  * @author Brenno Mello <brennodemello.bm at gmail.com>
  */
 public class FoTStreamConcepDrift {
-    private List<SensorData> listData;
+//    private List<SensorData> listData;
+      private CusumDM detectorConcepDrift;
+      private boolean changeDetector;
+      
+      public FoTStreamConcepDrift(){
+          
+      }
+      
+      
 }

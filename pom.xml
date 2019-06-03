@@ -101,12 +101,12 @@
             <scope>compile</scope>
         </dependency>
       
-       <dependency>
+<!--       <dependency>
             <groupId>org.tensorflow</groupId>
             <artifactId>tensorflow</artifactId>
             <version>1.13.1</version>
             <scope>compile</scope>
-        </dependency>
+        </dependency>-->
         
 <!--         https://mvnrepository.com/artifact/org.tensorflow/tensorflow-lite 
         <dependency>
@@ -116,7 +116,32 @@
             <scope>compile</scope>
         </dependency>-->
 
+<!--        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-core</artifactId>
+            <version>1.0.0-beta4</version>
+            <scope>compile</scope>
+        </dependency>
+        -->
         
+<!--         https://mvnrepository.com/artifact/org.deeplearning4j/deeplearning4j-core 
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-core</artifactId>
+            <version>1.0.0-beta3</version>
+            <scope>compile</scope>
+        </dependency>-->
+        
+        <!-- https://mvnrepository.com/artifact/org.deeplearning4j/deeplearning4j-core -->
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-core</artifactId>
+            <version>0.9.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>
@@ -139,7 +164,53 @@
                             !com.sun.javadoc, !com.sun.tools.doclets.standard, !org.apache.log4j.jmx,
                             !org.slf4j.event, !org.apache.kafka.connect.json, *</Import-Package>-->
                             <Import-Package>!com.sun.javadoc, !com.sun.tools.doclets.standard, 
-                                !org.apache.log4j.jmx, !org.slf4j.event, *</Import-Package>
+                                !org.apache.log4j.jmx, !org.slf4j.event, !org.python.core, !org.python.util, 
+                                !com.google.errorprone.annotations.concurrent,
+                                !com.jogamp.common.os,
+                                !com.jogamp.opencl,
+                                !com.jogamp.opencl.gl,
+                                !com.jogamp.opengl, 
+                                !com.jogamp.opengl.awt,
+                                !com.jogamp.opengl.glu,
+                                !com.jogamp.opengl.util,
+                                !com.sun.jdi,
+                                !com.sun.jdi.connect,
+                                !com.sun.jdi.event,
+                                !com.sun.jdi.request, 
+                                !com.sun.org.apache.xml.internal.utils,
+                                !com.sun.org.apache.xpath.internal,
+                                !com.sun.org.apache.xpath.internal.objects,
+                                !com.sun.tools.javac.processing, 
+                                !com.sun.tools.javac.util,
+                                !org.apache.maven.plugin,
+                                !org.apache.maven.plugin.logging,
+                                !org.apache.maven.project,
+                                !org.apache.tools.ant,
+                                !org.apache.tools.ant.taskdefs,
+                                !org.apache.tools.ant.types,
+                                !android.graphics,
+                                !magick,
+                                !org.apache.commons.vfs2,
+                                !org.apache.log,
+                                !org.eclipse.core.resources,
+                                !org.eclipse.core.runtime,
+                                !org.eclipse.jdt.core.dom,
+                                !org.eclipse.jdt.core.dom.rewrite,
+                                !org.eclipse.jdt.core.search,
+                                !org.eclipse.jdt.internal.core,
+                                !org.eclipse.jdt.internal.core.dom.rewrite,
+                                !org.eclipse.jdt.internal.corext.refactoring,
+                                !org.eclipse.jdt.internal.corext.refactoring.structure,
+                                !org.jaxen,
+                                !org.jaxen.dom,
+                                !org.jaxen.dom4j,
+                                !org.jaxen.jdom,
+                                !org.joda.convert,
+                                !org.mapstruct.ap.spi,
+                                !org.nd4j.shade.jackson.module.jaxb,
+                                !org.zeroturnaround.javarebel,
+                                !sun.security.action,
+                                *</Import-Package>
                     </instructions>
                     
                 </configuration>

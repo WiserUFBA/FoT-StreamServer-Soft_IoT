@@ -50,7 +50,7 @@ public class FoTFogStream {
     private KafkaStreams streams;
     private List<SensorData> listSensorData;
     private JsonParser parser;
-    private Map<String, FoTStreamConcepDrift>mapData;
+    private Map<String, FoTStreamMining>mapData;
     private CusumDM detectorConcepDrift;
     private boolean changeDetector;
     
@@ -62,7 +62,7 @@ public class FoTFogStream {
         this.kafkaConsumerStreamAPI = new KafkaConsumerStreamAPI();
         this.listSensorData = new LinkedList<>();
         this.parser = new JsonParser();
-        this.mapData = new HashMap<String, FoTStreamConcepDrift> ();
+        this.mapData = new HashMap<String, FoTStreamMining> ();
         
     }
     
@@ -190,33 +190,41 @@ public class FoTFogStream {
             if(element.isJsonObject()){
                 JsonObject jsonObject = element.getAsJsonObject();
                 String typeSensor = jsonObject.get("type").getAsString();
-                System.out.println("Sensor: " + typeSensor);
+                System.out.println("Type Sensor: " + typeSensor);
                 JsonArray jsonArray = jsonObject.get("valueSensor").getAsJsonArray();
                 
                 
-                FoTStreamConcepDrift fotStreamConceptDriftOld = this.mapData.get(typeSensor);
+                FoTStreamMining fotStreamConceptDriftOld = this.mapData.get(typeSensor);
                 if(fotStreamConceptDriftOld == null){
-                   fotStreamConceptDriftOld = new FoTStreamConcepDrift();
+                   fotStreamConceptDriftOld = new FoTStreamMining();
                    this.mapData.put(typeSensor, fotStreamConceptDriftOld);
                 } 
                 
                 List<SensorData> listData = new LinkedList<SensorData>();     
                 for (JsonElement jsonElementSensor : jsonArray) {
                     double data = jsonElementSensor.getAsDouble();
-                    SensorData sensorData = new SensorData(jsonElementSensor.getAsString());
+                    System.out.println("Double: "+data);
+                    
+                    SensorData sensorData = new SensorData(data, record.topic());
+                    
                     listData.add(sensorData);
+                    
+                    System.out.println(sensorData.getTopic() + " " + sensorData.getValue());
+                    
                     fotStreamConceptDriftOld.input(data);
-//                    if(fotStreamConceptDriftOld.getChange()){
-//                        this.changeDetector = true;
-//                    }
+//                  if(fotStreamConceptDriftOld.getChange()){
+//                     this.changeDetector = true;
+//                  }
                 }
                 
                 
                 
                 this.mapData.forEach((key, value) -> {
-                    if(value.getChange){
-                        System.out.println("Sensor: " + key + "Change detected");
-                        value.setChange(false);
+                    if(value.isChangeDetector()){
+                        value.setChangeDetector(false);
+                        System.out.println("Sensor type: " + key + " Change detected");                        
+                    }else{
+                        System.out.println("Sensor type: " + key + " No Change detected");                        
                     }
                 });
                 
@@ -239,6 +247,20 @@ public class FoTFogStream {
            
     public void runModelTensorFlow(){
         
+    }
+    
+    public void runModelDeeplearning4j(){
+        /* 
+        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+        .weightInit(WeightInit.XAVIER)
+        .activation(Activation.RELU)
+        .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
+        .updater(new Sgd(0.05))
+        // ... other hyperparameters
+        .list()
+        .backprop(true)
+        .build();
+        */
     }
     
     public void startStreamGatewayAnalysis(){      

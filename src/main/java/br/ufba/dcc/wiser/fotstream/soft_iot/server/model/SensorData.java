@@ -13,17 +13,24 @@ import java.time.LocalDateTime;
  * @author brenno
  */
 public class SensorData {
-    private String value;
+    private double value;
     //private FoTDeviceStream device;
     //private FoTSensorStream sensor;
     private LocalDateTime localDateTime;
     private long delay;
     private String gatewayID;
+    private String topic;
 
+    
       
-    public SensorData(String value){
+    public SensorData(double value){
         this.value = value;
         
+    }
+    
+     public SensorData(double data, String topic){
+        this.topic = topic;
+        this.value = data;
     }
      
     public long getDelay() {
@@ -35,11 +42,11 @@ public class SensorData {
     }
     
     
-    public String getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(double value) {
         this.value = value;
     }
 
@@ -63,6 +70,20 @@ public class SensorData {
      */
     public void setGatewayID(String gatewayID) {
         this.gatewayID = gatewayID;
+    }
+
+    /**
+     * @return the topic
+     */
+    public String getTopic() {
+        return topic;
+    }
+
+    /**
+     * @param topic the topic to set
+     */
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
     
     	

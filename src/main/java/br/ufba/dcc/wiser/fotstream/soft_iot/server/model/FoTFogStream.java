@@ -222,9 +222,13 @@ public class FoTFogStream {
                 this.mapData.forEach((key, value) -> {
                     if(value.isChangeDetector()){
                         value.setChangeDetector(false);
-                        System.out.println("Sensor type: " + key + " Change detected");                        
+                        System.out.println("Sensor type: " + key + " Change detected"); 
+                        value.trainLSTMDeeplearning4j(listData);
+                        
                     }else{
-                        System.out.println("Sensor type: " + key + " No Change detected");                        
+                        System.out.println("Sensor type: " + key + " No Change detected");
+                        
+                        
                     }
                 });
                 
